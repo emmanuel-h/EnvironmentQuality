@@ -3,6 +3,9 @@
 # `release` is its own job because R8, resource shrinking and the Compose
 # compiler are not exercised by any debug build: a compiler bump can break
 # `bundleRelease` and only `bundleRelease` while the unit tests stay green.
+#
+# `emulator` runs the instrumented tests in `app/src/androidTest` on an Android
+# emulator, which needs the KVM device GitHub's Ubuntu runners provide.
 name: checks
 
 on:
@@ -62,4 +65,55 @@ jobs:
           name: reports-${{ strategy.job-index }}
           path: |
             app/build/reports/
+          retention-days: 7
+
+  # Robolectric draws the screens on the JVM; this runs them on a real Android
+  # system image, where text measurement, fonts and the activity lifecycle are real.
+  emulator:
+    runs-on: ubuntu-latest
+    name: instrumented tests (emulator)
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      # Built before the emulator boots so a compile error fails fast and the
+      # emulator only waits for the install.
+      - name: ./gradlew assembleDebug assembleDebugAndroidTest
+        run: ./gradlew --no-daemon assembleDebug assembleDebugAndroidTest
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: ./gradlew connectedDebugAndroidTest
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew --no-daemon connectedDebugAndroidTest
+
+      - name: Upload instrumented test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: emulator-reports
+          path: |
+            app/build/reports/androidTests/
+            app/build/outputs/androidTest-results/
+          if-no-files-found: ignore
           retention-days: 7

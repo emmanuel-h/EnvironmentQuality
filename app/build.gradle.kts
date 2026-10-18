@@ -52,6 +52,8 @@ android {
 
     sourceSets {
         getByName("test").assets.srcDir("$projectDir/schemas")
+        // The instrumented tests answer requests with the same recorded API answers as the unit tests.
+        getByName("androidTest").assets.srcDir("$projectDir/src/test/resources")
     }
 
     if (hasSigningConfig) {
@@ -152,6 +154,8 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
 
 // A failing test prints its full message in the CI log, which is where QA findings are read.
