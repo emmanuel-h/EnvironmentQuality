@@ -23,10 +23,5 @@ private fun Placeholder(title: String, navigator: Navigator, back: Boolean) {
 
 @Composable fun SourcesScreen(navigator: Navigator) = Placeholder(stringResource(R.string.tab_sources), navigator, back = false)
 
-@Composable fun NearbyScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
-
 @Composable fun CompareScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
 
-@Composable fun DroughtScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
-
-@Composable fun RisksScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
