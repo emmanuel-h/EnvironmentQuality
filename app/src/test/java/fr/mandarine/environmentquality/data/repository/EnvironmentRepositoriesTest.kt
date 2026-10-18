@@ -5,6 +5,7 @@ import fr.mandarine.environmentquality.domain.model.Audience
 import fr.mandarine.environmentquality.domain.model.DroughtLevel
 import fr.mandarine.environmentquality.domain.model.SevesoStatus
 import fr.mandarine.environmentquality.domain.model.WaterResource
+import fr.mandarine.environmentquality.domain.model.byDay
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -112,7 +113,12 @@ class EnvironmentRepositoriesTest {
         )
 
         assertEquals("La Seine", repository.hydroStations("27")[1].river)
-        assertEquals(LocalDateTime.of(2024, 8, 11, 9, 0), repository.latestTemperature("03174000")!!.measuredAt)
+        val temperatures = repository.recentTemperatures("03174000")
+        assertEquals(LocalDateTime.of(2024, 8, 11, 9, 0), temperatures.first().measuredAt)
+        val days = temperatures.byDay()
+        assertEquals(listOf(LocalDate.of(2024, 8, 9), LocalDate.of(2024, 8, 10), LocalDate.of(2024, 8, 11)), days.map { it.date })
+        assertEquals(23.112, days[1].minCelsius, 0.001)
+        assertEquals(24.219, days[1].maxCelsius, 0.001)
         val flows = repository.flowStations("27")
         assertTrue(flows[0].active)
         assertFalse(flows[1].active)

@@ -1,6 +1,7 @@
 package fr.mandarine.environmentquality.domain.model
 
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class HydroStation(
@@ -30,6 +31,15 @@ data class TemperatureStation(
 )
 
 data class TemperatureReading(val celsius: Double, val measuredAt: LocalDateTime)
+
+/** One day of a river temperature series: its coolest and warmest reading. */
+data class DailyTemperature(val date: LocalDate, val minCelsius: Double, val maxCelsius: Double)
+
+/** Folds readings, in any order, into days, oldest first. */
+fun List<TemperatureReading>.byDay(): List<DailyTemperature> =
+    groupBy { it.measuredAt.toLocalDate() }
+        .map { (date, readings) -> DailyTemperature(date, readings.minOf { it.celsius }, readings.maxOf { it.celsius }) }
+        .sortedBy { it.date }
 
 data class GroundwaterStation(
     val code: String,

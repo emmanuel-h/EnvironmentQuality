@@ -179,6 +179,7 @@
     <string name="nearby_stable">Steady</string>
     <string name="nearby_measured_at">Measured on %1$s at %2$s</string>
     <string name="nearby_measured_on">Measured on %1$s</string>
+    <string name="nearby_temperature_range">Last %1$d days measured: %2$s to %3$s °C</string>
     <string name="nearby_temperature">Water temperature</string>
     <string name="nearby_no_temperature">No recent measurement.</string>
     <plurals name="nearby_temperature_stations">

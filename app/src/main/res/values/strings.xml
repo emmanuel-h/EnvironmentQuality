@@ -184,6 +184,7 @@
     <string name="nearby_stable">Stable</string>
     <string name="nearby_measured_at">Mesuré le %1$s à %2$s</string>
     <string name="nearby_measured_on">Mesurée le %1$s</string>
+    <string name="nearby_temperature_range">%1$d derniers jours mesurés : de %2$s à %3$s °C</string>
     <string name="nearby_temperature">Température de l\'eau</string>
     <string name="nearby_no_temperature">Pas de mesure récente.</string>
     <plurals name="nearby_temperature_stations">
