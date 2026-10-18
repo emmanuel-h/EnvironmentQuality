@@ -264,7 +264,26 @@
         <item quantity="many">%1$d substances analysées, %2$d quantifiées</item>
         <item quantity="other">%1$d substances analysées, %2$d quantifiées</item>
     </plurals>
-    <string name="nearby_source">Sources : Hub\'Eau (hydrométrie, température, écoulement, piézométrie), OFB et BRGM.</string>
+    <string name="nearby_river_quality">Qualité de la rivière</string>
+    <string name="nearby_river_quality_none">Aucune station de qualité prélevée cette année à moins de 20 km.</string>
+    <string name="nearby_river_sampled">Prélevé le %1$s</string>
+    <string name="river_nitrates">Nitrates</string>
+    <string name="river_oxygen">Oxygène dissous</string>
+    <string name="river_orthophosphates">Orthophosphates</string>
+    <string name="river_ammonium">Ammonium</string>
+    <string name="nearby_good_status_max">Bon état : ≤ %1$s</string>
+    <string name="nearby_good_status_min">Bon état : ≥ %1$s</string>
+    <string name="nearby_not_good_status">Hors du bon état (seuil %1$s)</string>
+    <string name="nearby_aquifer_level">Niveau de la nappe</string>
+    <string name="nearby_aquifer_none">Aucun piézomètre ne transmet dans ce département.</string>
+    <string name="nearby_level">Niveau</string>
+    <string name="unit_ngf">%1$s m NGF</string>
+    <string name="nearby_depth">Profondeur</string>
+    <string name="nearby_depth_below">sous le sol</string>
+    <string name="nearby_depth_above">au-dessus du sol</string>
+    <string name="nearby_change_month">%1$s cm en 4 semaines</string>
+    <string name="nearby_level_measured">Mesuré le %1$s</string>
+    <string name="nearby_source">Sources : Hub\'Eau (hydrométrie, température, écoulement, qualité des cours d\'eau et des nappes, piézométrie), OFB et BRGM.</string>
     <string name="unit_metres">%1$s m</string>
     <string name="unit_flow">%1$s m³/s</string>
     <string name="unit_celsius">%1$s °C</string>

@@ -1,0 +1,63 @@
+{
+  "count": 5,
+  "first": "https://hubeau.eaufrance.fr/api/v1/niveaux_nappes/stations?code_departement=27&fields=code_bss,nom_commune,libelle_pe,noms_masse_eau_edl,x,y,date_fin_mesure&page=1&size=200",
+  "last": null,
+  "prev": null,
+  "next": null,
+  "api_version": "1.4.3",
+  "data": [
+    {
+      "code_bss": "01511X0188/F",
+      "libelle_pe": "Forage Usine Steiner (Saint-Marcel) - 27",
+      "noms_masse_eau_edl": [
+        "Albien-Néocomien captif"
+      ],
+      "date_fin_mesure": "2019-10-22",
+      "nom_commune": "Saint-Marcel",
+      "x": 1.462803396,
+      "y": 49.102702291
+    },
+    {
+      "code_bss": "01512X0036/S1",
+      "libelle_pe": null,
+      "noms_masse_eau_edl": null,
+      "date_fin_mesure": "1984-11-29",
+      "nom_commune": "Bois-Jérôme-Saint-Ouen",
+      "x": 1.528868783,
+      "y": 49.100870044
+    },
+    {
+      "code_bss": "BSS003HEHE/X",
+      "libelle_pe": "PZ3",
+      "noms_masse_eau_edl": [
+        "Albien-Néocomien captif"
+      ],
+      "date_fin_mesure": "2026-10-15",
+      "nom_commune": "La Chapelle-Longueville",
+      "x": 1.442357198,
+      "y": 49.121317605
+    },
+    {
+      "code_bss": "01508X0100/P",
+      "libelle_pe": "PUITS DE DOUAINS (DOUAINS) - 27",
+      "noms_masse_eau_edl": [
+        "Craie altérée du Neubourg-Iton-plaine de Saint-André"
+      ],
+      "date_fin_mesure": "2026-10-16",
+      "nom_commune": "Douains",
+      "x": 1.430497927,
+      "y": 49.040770323
+    },
+    {
+      "code_bss": "01515X2015/S1",
+      "libelle_pe": "Puits de Chaignes (Chaignes) - 27",
+      "noms_masse_eau_edl": [
+        "Craie altérée du Neubourg-Iton-plaine de Saint-André"
+      ],
+      "date_fin_mesure": "2026-10-16",
+      "nom_commune": "Chaignes",
+      "x": 1.445393268,
+      "y": 49.014101938
+    }
+  ]
+}

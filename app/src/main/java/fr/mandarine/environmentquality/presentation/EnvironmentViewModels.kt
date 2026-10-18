@@ -6,11 +6,14 @@ import fr.mandarine.environmentquality.domain.model.DroughtStatus
 import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterLevel
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.PiezometerStation
 import fr.mandarine.environmentquality.domain.model.RiskDetails
+import fr.mandarine.environmentquality.domain.model.RiverQuality
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
 import fr.mandarine.environmentquality.domain.model.byDay
@@ -63,6 +66,16 @@ data class RiverTemperature(
     val days: List<DailyTemperature> = emptyList(),
 )
 
+/** The nearest reporting piezometer, its latest level and the one about four weeks before. */
+data class AquiferLevel(
+    val station: PiezometerStation,
+    val latest: GroundwaterLevel,
+    val monthAgo: GroundwaterLevel?,
+    val distanceKm: Double?,
+)
+
+data class NearbyRiverQuality(val quality: RiverQuality, val distanceKm: Double?)
+
 data class Nearby(
     val river: LiveRiver?,
     val temperature: RiverTemperature?,
@@ -73,6 +86,8 @@ data class Nearby(
     val flows: Map<String, FlowObservation> = emptyMap(),
     /** The results of [groundwater]'s last sampling. */
     val groundwaterSampling: GroundwaterSampling? = null,
+    val aquiferLevel: AquiferLevel? = null,
+    val riverQuality: NearbyRiverQuality? = null,
 )
 
 /** The stations of the commune's department, nearest first, and their latest values. */
@@ -101,6 +116,12 @@ class NearbyViewModel(
             val day = station.lastSampledOn ?: return@async null
             runCatching { stations.groundwaterSampling(station.code, day) }.getOrNull()
         }
+        val level = async { runCatching { aquiferLevel(department, centre) }.getOrNull() }
+        val quality = async {
+            centre?.let { point ->
+                runCatching { stations.riverQuality(point) }.getOrNull()?.let { NearbyRiverQuality(it, distance(point, it.location)) }
+            }
+        }
         Nearby(
             river = river.await(),
             temperature = temperature.await(),
@@ -109,7 +130,25 @@ class NearbyViewModel(
             groundwater = groundwater.await(),
             flows = latestFlows.await(),
             groundwaterSampling = sampling.await(),
+            aquiferLevel = level.await(),
+            riverQuality = quality.await(),
         )
+    }
+
+    /** Piezometers that reported in the month before the latest report around; the nearest that answers. */
+    private suspend fun aquiferLevel(department: String, centre: GeoPoint?): AquiferLevel? {
+        val all = stations.piezometers(department)
+        val newest = all.mapNotNull { it.lastMeasuredOn }.maxOrNull() ?: return null
+        val reporting = all.filter { it.lastMeasuredOn?.isBefore(newest.minusDays(LEVEL_RECENT_DAYS)) == false }
+        for (station in nearest(reporting, centre) { it.location }.take(4)) {
+            val levels = runCatching { stations.recentLevels(station.code) }.getOrDefault(emptyList())
+            val latest = levels.maxByOrNull { it.measuredOn } ?: continue
+            val monthAgo = levels
+                .filter { !it.measuredOn.isAfter(latest.measuredOn.minusDays(LEVEL_COMPARISON_DAYS)) }
+                .maxByOrNull { it.measuredOn }
+            return AquiferLevel(station, latest, monthAgo, distance(centre, station.location))
+        }
+        return null
     }
 
     /**
@@ -154,5 +193,7 @@ class NearbyViewModel(
     private companion object {
         const val FLOWS_SHOWN = 3
         const val RECENT_YEARS = 3L
+        const val LEVEL_RECENT_DAYS = 30L
+        const val LEVEL_COMPARISON_DAYS = 28L
     }
 }

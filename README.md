@@ -27,7 +27,10 @@ the switch in the Sources tab.
 - **Nearby**: the closest live river height and flow, water temperature, flow
   observation stations with their latest flow class (flowing, low, dry…), and the
   nearest groundwater monitoring point with its last sampling: nitrates, total
-  pesticides and how many substances were quantified.
+  pesticides and how many substances were quantified. The closest river quality
+  station sampled in the last year (nitrates, dissolved oxygen, orthophosphates,
+  ammonium against the good-status limits) and the nearest reporting piezometer's
+  groundwater level and its change over four weeks.
 - **Compare** two municipalities parameter by parameter.
 - **Follow** municipalities and get a notification when a new sample is published, when
   the water is non-compliant or when a quality reference is exceeded.
@@ -41,7 +44,7 @@ reservations a square with "!", non-compliant a diamond with a cross.
 | Source | Used for |
 |---|---|
 | [Hub'Eau, qualité de l'eau potable](https://hubeau.eaufrance.fr/page/api-qualite-eau-potable) | Samples and analysis results (health monitoring by the Ministry of Health) |
-| [Hub'Eau hydrométrie, température, écoulement, qualité des nappes](https://hubeau.eaufrance.fr) | Live rivers, water temperature, flow stations, groundwater points |
+| [Hub'Eau hydrométrie, température, écoulement, qualité des nappes et des cours d'eau, piézométrie](https://hubeau.eaufrance.fr) | Live rivers, water temperature, flow observations, groundwater quality and levels, river quality |
 | [VigiEau](https://vigieau.gouv.fr) | Drought restriction zones and orders |
 | [Géorisques](https://www.georisques.gouv.fr) | Risks, natural disasters, radon, seismic zones, classified sites |
 | [API Découpage administratif](https://geo.api.gouv.fr) | Municipality search, postcodes, coordinates |

@@ -5,10 +5,14 @@ import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowState
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterLevel
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.PiezometerStation
+import fr.mandarine.environmentquality.domain.model.RiverQuality
+import fr.mandarine.environmentquality.domain.model.RiverResult
 import fr.mandarine.environmentquality.domain.repository.CommuneRepository
 import fr.mandarine.environmentquality.domain.repository.StationRepository
 import io.mockk.coEvery
@@ -114,5 +118,46 @@ class NearbyViewModelTest {
 
         assertEquals(FlowState.DRY, nearby.flows["f2"]?.state)
         assertNull(nearby.flows["f1"])
+    }
+
+    private fun piezometer(code: String, latitude: Double, lastMeasuredOn: LocalDate?) =
+        PiezometerStation(code, code, null, GeoPoint(latitude, 1.48), lastMeasuredOn)
+
+    private fun level(day: LocalDate, metres: Double) = GroundwaterLevel(day, metres, 10.0)
+
+    @Test
+    fun `should compare the nearest reporting piezometer's level with four weeks before when stale wells are closer`() = runTest {
+        val today = LocalDate.of(2026, 10, 16)
+        val stations = stationsAround(emptyList())
+        coEvery { stations.piezometers("27") } returns listOf(
+            piezometer("stopped-2019", 49.09, LocalDate.of(2019, 10, 22)),
+            piezometer("silent", 49.10, today),
+            piezometer("reporting", 49.12, today.minusDays(1)),
+            piezometer("far", 49.6, today),
+        )
+        coEvery { stations.recentLevels("silent") } returns emptyList()
+        coEvery { stations.recentLevels("reporting") } returns (0L..40L).map { level(today.minusDays(1 + it), 100.0 - it * 0.01) }
+        coEvery { stations.riverQuality(any()) } returns null
+
+        val level = nearbyOf(stations).aquiferLevel!!
+
+        assertEquals("reporting", level.station.code)
+        assertEquals(today.minusDays(1), level.latest.measuredOn)
+        assertEquals(today.minusDays(29), level.monthAgo!!.measuredOn)
+        assertEquals(0.28, level.latest.levelMetres - level.monthAgo!!.levelMetres, 1e-9)
+    }
+
+    @Test
+    fun `should ask for river quality at the commune's centre and give its distance`() = runTest {
+        val stations = stationsAround(emptyList())
+        val quality = RiverQuality("03172150", "RU DE BLARU A VERNON 1", GeoPoint(49.09, 1.48), listOf(RiverResult(1340, "Nitrates", 49.2, "mg(NO3)/L", LocalDate.of(2026, 6, 1))))
+        coEvery { stations.piezometers("27") } returns emptyList()
+        coEvery { stations.riverQuality(vernon.centre!!) } returns quality
+
+        val nearby = nearbyOf(stations)
+
+        assertEquals(quality, nearby.riverQuality?.quality)
+        assertEquals(0.0, nearby.riverQuality!!.distanceKm!!, 0.5)
+        assertNull(nearby.aquiferLevel)
     }
 }

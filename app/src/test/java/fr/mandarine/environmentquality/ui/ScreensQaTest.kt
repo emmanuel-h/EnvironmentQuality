@@ -167,6 +167,16 @@ class ScreensQaTest {
     }
 
     @Test
+    fun `should show the nearest river quality and groundwater level when the nearby screen opens`() {
+        show("nearby-quality-level") { NearbyScreen("27681", navigator) }
+        waitFor("RU DE BLARU A VERNON 1")
+        waitFor("Bon état : ≥ 6 mg/L")
+        waitFor("Prélevé le 1 juin 2026")
+        waitFor("18,09 m NGF")
+        waitFor("au-dessus du sol")
+    }
+
+    @Test
     fun `should hide the river sections when the groundwater tab is picked`() {
         show("nearby-groundwater") { NearbyScreen("27681", navigator) }
         waitFor("Rivière en direct")
@@ -237,6 +247,10 @@ class ScreensQaTest {
 
     private companion object {
         val ROUTES = listOf(
+            // Before "code_parametre=", which the river quality URL also carries.
+            "qualite_rivieres/analyse_pc" to "rivieres_analyses.json",
+            "niveaux_nappes/stations" to "piezo_stations.json",
+            "niveaux_nappes/chroniques" to "piezo_chroniques.json",
             "/communes/27681" to "geo_commune_27681.json",
             "communes?" to "geo_communes_vernon.json",
             "code_parametre=" to "resultats_dis_history.json",
