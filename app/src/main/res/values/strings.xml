@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Environment Quality</string>
+    <string name="app_name">Qualité de l\'eau</string>
+    <string name="coming_soon">Bientôt disponible.</string>
+
+    <string name="tab_map">Carte</string>
+    <string name="tab_search">Rechercher</string>
+    <string name="tab_follows">Suivis</string>
+    <string name="tab_sources">Sources</string>
+
+    <string name="action_back">Retour</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="error_generic">Impossible de charger les données. Vérifiez votre connexion.</string>
+
+    <string name="status_conform">Conforme</string>
+    <string name="status_reserves">Réserves</string>
+    <string name="status_non_conform">Non conforme</string>
+    <string name="status_unknown">Non analysé</string>
 </resources>
