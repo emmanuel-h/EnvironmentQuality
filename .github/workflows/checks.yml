@@ -107,6 +107,25 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: ./gradlew --no-daemon connectedDebugAndroidTest
 
+      # Gradle prints nothing per test on a device run: list every case and its
+      # outcome from the JUnit reports, in the log and the job summary.
+      - name: List the instrumented test results
+        if: always()
+        run: |
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import glob, xml.etree.ElementTree as ET
+          files = glob.glob("app/build/outputs/androidTest-results/connected/**/*.xml", recursive=True)
+          if not files:
+              print("No instrumented test report was written.")
+          for path in files:
+              suite = ET.parse(path).getroot()
+              print(f"### {suite.get('name')}: {suite.get('tests')} tests, {suite.get('failures')} failures, {suite.get('skipped', '0')} skipped\n")
+              for case in suite.iter("testcase"):
+                  outcome = "failed" if case.find("failure") is not None else "skipped" if case.find("skipped") is not None else "passed"
+                  print(f"- {outcome}: {case.get('classname')}.{case.get('name')}")
+              print()
+          PY
+
       - name: Upload instrumented test reports
         if: always()
         uses: actions/upload-artifact@v7
