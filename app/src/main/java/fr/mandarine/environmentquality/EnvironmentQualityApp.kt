@@ -12,7 +12,7 @@ import fr.mandarine.environmentquality.data.device.AlertWorker
 class EnvironmentQualityApp : Application(), Configuration.Provider {
 
     lateinit var container: AppContainer
-        private set
+        internal set
 
     override fun onCreate() {
         super.onCreate()
