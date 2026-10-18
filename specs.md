@@ -69,6 +69,45 @@ All free, open access, documented at https://hubeau.eaufrance.fr
 
 ---
 
+### Additional environmental sources
+
+Only official or governmental sources are used. Each source below was tested on 2026-10-18 against Vernon (INSEE `27681`).
+
+#### Ready now — open JSON, no API key
+
+| Topic | Source (publisher) | Endpoint | What we show |
+|---|---|---|---|
+| Drought water restrictions | VigiEau (Ministère de la Transition écologique) | `GET https://api.vigieau.gouv.fr/api/zones?commune={insee}` | Alert level per zone (`niveauGravite`: vigilance, alerte, alerte renforcée, crise), zone type (surface water, groundwater, drinking water), restricted uses (`usages`), decree validity dates |
+| Natural & technological risks (incl. forest fire where it applies) | Géorisques (Ministère de la Transition écologique, BRGM) | `GET https://georisques.gouv.fr/api/v1/gaspar/risques?code_insee={insee}` | List of known risks for the commune (`risques_detail[].libelle_risque_long`) |
+| Past natural disasters | Géorisques | `GET https://georisques.gouv.fr/api/v1/gaspar/catnat?code_insee={insee}` | CatNat decrees: event dates, risk label, publication date |
+| Radon | Géorisques | `GET https://georisques.gouv.fr/api/v1/radon?code_insee={insee}` | Radon potential class (1 to 3) |
+| Earthquake zone | Géorisques | `GET https://georisques.gouv.fr/api/v1/zonage_sismique?code_insee={insee}` | Seismic zone (1 very low to 5 strong) |
+| Classified industrial sites (ICPE, Seveso) | Géorisques | `GET https://georisques.gouv.fr/api/v1/installations_classees?code_insee={insee}` | Site name, regime, Seveso status, activity state, coordinates, inspection reports |
+| Live river height and flow | Hub'Eau Hydrométrie (OFB, Eaufrance) | `GET https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr?code_entite={station}` | Height (`H`) and flow (`Q`), updated hourly, for stations from `referentiel/stations` |
+| River temperature | Hub'Eau Température | `GET https://hubeau.eaufrance.fr/api/v1/temperature/station` and `/chronique` | Temperature stations near the commune and their time series |
+
+Géorisques responses are paginated (`page`, `page_size`, `total_pages`, `next`). VigiEau returns a bare array.
+
+#### Managed later — official, but needs a free account
+
+| Topic | Source (publisher) | Access | Notes |
+|---|---|---|---|
+| Forest fire danger (Météo des forêts) | Météo-France | Free API key on https://portail-api.meteofrance.fr (`DonneesPubliquesMeteoForets`) | Daily fire danger level per department. Yearly archives are open as CSV on data.gouv.fr ("Archives de la Météo des forêts") |
+| Weather warnings (vigilance) | Météo-France | Same portal, free key | Orange / red warnings per department |
+| Air quality (NO2, O3, PM10, PM2.5) | Géod'air (Ineris / LCSQA) | Free account at https://www.geodair.fr/donnees/api, strict quotas | Hourly and daily values per regulatory monitoring station |
+
+#### Managed later — weaker options
+
+| Topic | Source | Why it is weaker |
+|---|---|---|
+| Air quality index (indice ATMO) | Regional Atmo networks (state-approved) | One API per region, no single national endpoint |
+| Pollen | Atmo networks, Ministère de la Santé (RNSA archives) | Regional or historical only; no national live API found |
+| Past forest fires (BDIFF) | Ministère de l'Agriculture | Website exports only; could not be tested automatically |
+| Flood warnings (Vigicrues) | Ministère de la Transition écologique | Public services exist but could not be tested automatically |
+| Bathing water quality | Ministère de la Santé / ARS | Mostly regional datasets on data.gouv.fr; Hub'Eau "surveillance littoral" call failed during testing |
+
+---
+
 ## Map integration
 
 ### Recommended library: OpenLayers or Leaflet.js
@@ -110,6 +149,19 @@ All free, open access, documented at https://hubeau.eaufrance.fr
 - [ ] Export results as CSV for a given area
 - [ ] Alert system — subscribe to updates for a commune
 - [ ] Comparison view between municipalities
+
+### Environment extensions (ready-now sources)
+- [ ] Drought restrictions card on the commune page, with the current alert level (VigiEau)
+- [ ] Risks card on the commune page: known risks, past natural disasters, radon, earthquake zone (Géorisques)
+- [ ] Classified industrial sites near the commune (Géorisques ICPE)
+- [ ] Live river height and flow for nearby stations (Hub'Eau Hydrométrie)
+- [ ] River temperature for nearby stations (Hub'Eau Température)
+
+### Later
+- [ ] Forest fire danger (Météo des forêts) — needs a free Météo-France key
+- [ ] Weather warnings — needs a free Météo-France key
+- [ ] Air quality — needs a free Géod'air account
+- [ ] Weaker options listed under "Managed later — weaker options"
 
 ---
 
