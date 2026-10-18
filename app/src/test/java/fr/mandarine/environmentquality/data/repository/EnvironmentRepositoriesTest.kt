@@ -3,12 +3,14 @@ package fr.mandarine.environmentquality.data.repository
 import fr.mandarine.environmentquality.data.remote.FakeHttpClient
 import fr.mandarine.environmentquality.domain.model.Audience
 import fr.mandarine.environmentquality.domain.model.DroughtLevel
+import fr.mandarine.environmentquality.domain.model.FlowState
 import fr.mandarine.environmentquality.domain.model.SevesoStatus
 import fr.mandarine.environmentquality.domain.model.WaterResource
 import fr.mandarine.environmentquality.domain.model.byDay
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
@@ -132,5 +134,60 @@ class EnvironmentRepositoriesTest {
 
         assertEquals("BSS000JKHP", stations.single().code)
         assertEquals("Source", stations.single().nature)
+    }
+
+    @Test
+    fun `should keep each station's latest flow class when reading observations`() = runTest {
+        val http = FakeHttpClient(listOf("ecoulement/observations" to "ecoulement_observations.json"))
+
+        val flows = HubEauStationRepository(http).latestFlows(listOf("H3120421", "H3150001"))
+
+        assertEquals(FlowState.FLOWING, flows.getValue("H3120421").state)
+        assertEquals(LocalDate.of(2026, 9, 23), flows.getValue("H3150001").observedOn)
+        assertTrue("code_station=H3120421%2CH3150001" in http.requests.single())
+    }
+
+    @Test
+    fun `should make no request when there is no flow station to observe`() = runTest {
+        val http = FakeHttpClient(emptyList())
+
+        assertTrue(HubEauStationRepository(http).latestFlows(emptyList()).isEmpty())
+        assertTrue(http.requests.isEmpty())
+    }
+
+    @Test
+    fun `should read the last sampling day and the water bodies when listing the commune's groundwater stations`() = runTest {
+        val http = FakeHttpClient(listOf("qualite_nappes/stations" to "nappes_stations_vernon.json"))
+
+        val stations = HubEauStationRepository(http).groundwaterStations("27681", "27")
+
+        val latest = stations.first { it.code == "BSS000LDUS" }
+        assertEquals(LocalDate.of(2025, 11, 12), latest.lastSampledOn)
+        assertEquals("Craie du Vexin normand et picard", latest.waterBody)
+        assertEquals(15.0, latest.altitude!!, 1e-9)
+        assertNull(stations.first { it.code == "BSS000LECJ" }.lastSampledOn)
+    }
+
+    @Test
+    fun `should read nitrates, pesticides and quantified substances when reading a groundwater sampling`() = runTest {
+        val http = FakeHttpClient(listOf("qualite_nappes/analyses" to "nappes_analyses.json"))
+
+        val sampling = HubEauStationRepository(http).groundwaterSampling("BSS000LDUS", LocalDate.of(2025, 11, 12))!!
+
+        assertEquals(LocalDate.of(2025, 11, 12), sampling.sampledOn)
+        assertEquals(44, sampling.results.size)
+        assertEquals(34, sampling.quantifiedCount)
+        assertEquals(16.0, sampling.nitrates!!.value!!, 1e-9)
+        assertEquals("mg(NO3)/L", sampling.nitrates!!.unit)
+        assertEquals(0.13, sampling.pesticides!!.value!!, 1e-9)
+        assertTrue("bss_id=BSS000LDUS" in http.requests.single())
+        assertTrue("date_debut_prelevement=2025-11-12" in http.requests.single())
+    }
+
+    @Test
+    fun `should report no sampling when the station has no analysis`() = runTest {
+        val http = FakeHttpClient(listOf("qualite_nappes/analyses" to "hubeau_empty.json"))
+
+        assertNull(HubEauStationRepository(http).groundwaterSampling("BSS000JKHP", LocalDate.of(2020, 1, 1)))
     }
 }

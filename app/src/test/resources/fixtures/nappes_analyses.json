@@ -1,0 +1,406 @@
+{
+  "count": 44,
+  "first": "https://hubeau.eaufrance.fr/api/v1/qualite_nappes/analyses?bss_id=BSS000LDUS&date_debut_prelevement=2025-11-12&fields=bss_id,date_debut_prelevement,code_param,nom_param,resultat,symbole_unite,code_remarque_analyse&page=1&size=1000",
+  "last": null,
+  "prev": null,
+  "next": null,
+  "api_version": "1.4.0",
+  "data": [
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 6483,
+      "nom_param": "Iodosulfuron-methyl-sodium",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 2743,
+      "nom_param": "Fenhexamid",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1749,
+      "nom_param": "Heptachlore époxyde endo trans",
+      "resultat": 0.005,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1669,
+      "nom_param": "Norflurazone",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 2984,
+      "nom_param": "Fluazinam",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 5671,
+      "nom_param": "Thiacloprid",
+      "resultat": 0.01,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1840,
+      "nom_param": "Flamprop-isopropyl",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 5648,
+      "nom_param": "Ethylenethiouree",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 2076,
+      "nom_param": "Mésotrione",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1877,
+      "nom_param": "Imidaclopride",
+      "resultat": 0.02,
+      "code_remarque_analyse": 2,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 6374,
+      "nom_param": "Nitrates/50 + Nitrites/3",
+      "resultat": 0.32,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1276,
+      "nom_param": "Tétrachlorure de carbone",
+      "resultat": 0.29,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1367,
+      "nom_param": "Potassium",
+      "resultat": 2.3,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(K)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1350,
+      "nom_param": "Phosphore total",
+      "resultat": 0.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(P2O5)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1342,
+      "nom_param": "Silicates",
+      "resultat": 13.9,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(SiO2)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1158,
+      "nom_param": "Dibromochloromethane",
+      "resultat": 0.06,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1109,
+      "nom_param": "Atrazine déisopropyl",
+      "resultat": 0.03,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1394,
+      "nom_param": "Manganèse",
+      "resultat": 1.1,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg(Mn)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1347,
+      "nom_param": "Titre alcalimétrique complet (T.A.C.)",
+      "resultat": 28.5,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "°f"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1327,
+      "nom_param": "Hydrogénocarbonates",
+      "resultat": 348.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(HCO3)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1335,
+      "nom_param": "Ammonium",
+      "resultat": 0.01,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(NH4)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1393,
+      "nom_param": "Fer",
+      "resultat": 12.5,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg(Fe)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 6219,
+      "nom_param": "Perchlorate",
+      "resultat": 0.99,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1337,
+      "nom_param": "Chlorures",
+      "resultat": 28.2,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(Cl)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1107,
+      "nom_param": "Atrazine",
+      "resultat": 0.01,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1372,
+      "nom_param": "Magnésium",
+      "resultat": 13.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(Mg)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1456,
+      "nom_param": "Dichloroéthylène-1,2 cis",
+      "resultat": 0.078,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1286,
+      "nom_param": "Trichloroéthylène",
+      "resultat": 0.364,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 2963,
+      "nom_param": "Somme du tetrachloroéthylène et du trichloroéthylène",
+      "resultat": 4.01,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1841,
+      "nom_param": "Carbone Organique",
+      "resultat": 0.53,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(C)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1340,
+      "nom_param": "Nitrates",
+      "resultat": 16.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(NO3)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1338,
+      "nom_param": "Sulfates",
+      "resultat": 17.3,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(SO4)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1263,
+      "nom_param": "Simazine",
+      "resultat": 0.02,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1763,
+      "nom_param": "Ethidimuron",
+      "resultat": 0.02,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 5907,
+      "nom_param": "Equilibre calcocarbonique de l’eau destinée à la consommation humaine",
+      "resultat": 2.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "X"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1830,
+      "nom_param": "Atrazine déisopropyl déséthyl",
+      "resultat": 0.03,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1108,
+      "nom_param": "Atrazine déséthyl",
+      "resultat": 0.02,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1272,
+      "nom_param": "Tétrachloroéthylène",
+      "resultat": 3.648,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 7073,
+      "nom_param": "Fluorure anion",
+      "resultat": 0.14,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1362,
+      "nom_param": "Bore",
+      "resultat": 26.4,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg(B)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 6276,
+      "nom_param": "Somme des pesticides totaux",
+      "resultat": 0.13,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "µg/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1374,
+      "nom_param": "Calcium",
+      "resultat": 113.3,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(Ca)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1375,
+      "nom_param": "Sodium",
+      "resultat": 16.9,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(Na)/L"
+    },
+    {
+      "bss_id": "BSS000LDUS",
+      "date_debut_prelevement": "2025-11-12T15:26:00Z",
+      "code_param": 1328,
+      "nom_param": "Carbonates",
+      "resultat": 0.0,
+      "code_remarque_analyse": 1,
+      "symbole_unite": "mg(CO3)/L"
+    }
+  ]
+}

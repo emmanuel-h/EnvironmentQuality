@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -45,7 +46,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.mandarine.environmentquality.R
 import fr.mandarine.environmentquality.domain.model.DailyTemperature
+import fr.mandarine.environmentquality.domain.model.FlowObservation
+import fr.mandarine.environmentquality.domain.model.FlowState
 import fr.mandarine.environmentquality.domain.model.FlowStation
+import fr.mandarine.environmentquality.domain.model.GroundwaterResult
+import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.presentation.LiveRiver
 import fr.mandarine.environmentquality.presentation.LoadState
@@ -118,12 +123,12 @@ private fun NearbyContent(nearby: Nearby, tab: NearbyTab) {
             if (nearby.flowStations.isEmpty()) {
                 EmptyText(stringResource(R.string.nearby_no_flow))
             } else {
-                FlowCard(nearby.flowStations, nearby.flowStationCount)
+                FlowCard(nearby.flowStations, nearby.flows, nearby.flowStationCount)
             }
         }
         if (tab != NearbyTab.RIVERS) {
             SectionTitle(stringResource(R.string.nearby_groundwater))
-            nearby.groundwater?.let { GroundwaterCard(it) } ?: EmptyText(stringResource(R.string.nearby_no_groundwater))
+            nearby.groundwater?.let { GroundwaterCard(it, nearby.groundwaterSampling) } ?: EmptyText(stringResource(R.string.nearby_no_groundwater))
         }
         Text(stringResource(R.string.nearby_source), style = MaterialTheme.typography.bodySmall)
     }
@@ -293,17 +298,25 @@ private fun TemperatureDays(days: List<DailyTemperature>) {
 }
 
 @Composable
-private fun FlowCard(stations: List<FlowStation>, total: Int) {
+private fun FlowCard(stations: List<FlowStation>, flows: Map<String, FlowObservation>, total: Int) {
     AppCard(Modifier.fillMaxWidth()) {
         stations.forEachIndexed { index, station ->
             if (index > 0) HorizontalDivider(color = Palette.Divider, modifier = Modifier.padding(vertical = 8.dp))
+            val observation = flows[station.code]
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(station.river ?: station.name, style = MaterialTheme.typography.titleSmall)
                     station.commune?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+                    observation?.let {
+                        Text(stringResource(R.string.nearby_flow_observed, Format.mediumDate(it.observedOn)), style = MaterialTheme.typography.bodySmall)
+                    }
                 }
-                ActiveBadge(station.active)
+                if (observation != null) FlowBadge(observation.state) else ActiveBadge(station.active)
             }
+        }
+        if (flows.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            Text(stringResource(R.string.nearby_flow_legend), style = MaterialTheme.typography.bodySmall)
         }
         if (total > stations.size) {
             Spacer(Modifier.height(10.dp))
@@ -314,10 +327,33 @@ private fun FlowCard(stations: List<FlowStation>, total: Int) {
 
 @Composable
 private fun ActiveBadge(active: Boolean) {
+    if (active) {
+        Badge(stringResource(R.string.nearby_active), Palette.Conform, Palette.Conform, Palette.ConformBg)
+    } else {
+        Badge(stringResource(R.string.nearby_inactive), Palette.InkSecondary, Palette.Muted, Palette.UnknownBg)
+    }
+}
+
+/** Each class has its own word, so the badge never relies on its colour alone. */
+@Composable
+private fun FlowBadge(state: FlowState) {
+    when (state) {
+        FlowState.FLOWING -> Badge(stringResource(R.string.flow_flowing), Palette.Conform, Palette.Conform, Palette.ConformBg)
+        FlowState.VISIBLE -> Badge(stringResource(R.string.flow_visible), Palette.Conform, Palette.Conform, Palette.ConformBg)
+        FlowState.LOW -> Badge(stringResource(R.string.flow_low), Palette.ReservesText, Palette.Reserves, Palette.ReservesBg)
+        FlowState.NOT_VISIBLE -> Badge(stringResource(R.string.flow_not_visible), Palette.NonConform, Palette.NonConform, Palette.NonConformBg)
+        FlowState.DRY -> Badge(stringResource(R.string.flow_dry), Palette.NonConform, Palette.NonConform, Palette.NonConformBg)
+        FlowState.UNKNOWN -> Badge(stringResource(R.string.flow_unknown), Palette.InkSecondary, Palette.Muted, Palette.UnknownBg)
+    }
+}
+
+@Composable
+private fun Badge(label: String, text: Color, dot: Color, background: Color) {
     Row(
         Modifier
+            .padding(start = 8.dp)
             .clip(RoundedCornerShape(999.dp))
-            .background(if (active) Palette.ConformBg else Palette.UnknownBg)
+            .background(background)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -325,26 +361,83 @@ private fun ActiveBadge(active: Boolean) {
             Modifier
                 .size(6.dp)
                 .clip(CircleShape)
-                .background(if (active) Palette.Conform else Palette.Muted),
+                .background(dot),
         )
         Spacer(Modifier.width(5.dp))
-        Text(
-            stringResource(if (active) R.string.nearby_active else R.string.nearby_inactive),
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (active) Palette.Conform else Palette.InkSecondary,
-        )
+        Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = text)
     }
 }
 
 @Composable
-private fun GroundwaterCard(station: GroundwaterStation) {
+private fun GroundwaterCard(station: GroundwaterStation, sampling: GroundwaterSampling?) {
     AppCard(Modifier.fillMaxWidth()) {
         StationHeader(AppIcons.Drop, station.commune ?: station.code, station.code)
         Spacer(Modifier.height(10.dp))
         station.nature?.let { Detail(stringResource(R.string.nearby_nature), it) }
         station.waterBody?.let { Detail(stringResource(R.string.nearby_water_body), it) }
         station.altitude?.let { Detail(stringResource(R.string.nearby_altitude), stringResource(R.string.unit_metres, Format.decimal(it, 0))) }
+        HorizontalDivider(color = Palette.Divider, modifier = Modifier.padding(vertical = 12.dp))
+        if (sampling == null) {
+            Text(stringResource(R.string.nearby_groundwater_none), style = MaterialTheme.typography.bodyMedium, color = Palette.InkSecondary)
+        } else {
+            GroundwaterSamplingSummary(sampling)
+        }
+    }
+}
+
+@Composable
+private fun GroundwaterSamplingSummary(sampling: GroundwaterSampling) {
+    val nitrates = sampling.nitrates
+    val pesticides = sampling.pesticides
+    if (nitrates != null || pesticides != null) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            nitrates?.let {
+                GroundwaterMeasure(stringResource(R.string.nearby_groundwater_nitrates), it, GroundwaterSampling.NITRATES_LIMIT, Modifier.weight(1f))
+            }
+            pesticides?.let {
+                GroundwaterMeasure(stringResource(R.string.nearby_groundwater_pesticides), it, GroundwaterSampling.PESTICIDES_TOTAL_LIMIT, Modifier.weight(1f))
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+    }
+    val count = sampling.results.size
+    Text(
+        pluralStringResource(R.plurals.nearby_groundwater_substances, count, count, sampling.quantifiedCount),
+        style = MaterialTheme.typography.bodySmall,
+    )
+    Spacer(Modifier.height(6.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(AppIcons.Clock, contentDescription = null, tint = Palette.Muted, modifier = Modifier.size(14.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(stringResource(R.string.nearby_groundwater_sampled, Format.longDate(sampling.sampledOn)), style = MaterialTheme.typography.bodySmall)
+    }
+}
+
+/** Sandre units name the measured form, "mg(NO3)/L"; the plain unit reads better next to a number. */
+private fun plainUnit(unit: String?): String = unit?.replace(Regex("\\(.*?\\)"), "").orEmpty()
+
+@Composable
+private fun GroundwaterMeasure(label: String, result: GroundwaterResult, limit: Double, modifier: Modifier = Modifier) {
+    val unit = plainUnit(result.unit)
+    val limitText = listOf(Format.decimal(limit), unit).filter { it.isNotEmpty() }.joinToString(" ")
+    val value = result.value
+    val over = result.quantified && value != null && value > limit
+    Column(modifier) {
+        Text(label, style = MaterialTheme.typography.labelLarge, color = Palette.InkSecondary)
+        Text(
+            if (result.quantified && value != null) {
+                listOf(Format.decimal(value), unit).filter { it.isNotEmpty() }.joinToString(" ")
+            } else {
+                stringResource(R.string.nearby_groundwater_not_quantified)
+            },
+            style = MaterialTheme.typography.headlineSmall,
+            color = if (over) Palette.NonConform else Color.Unspecified,
+        )
+        Text(
+            stringResource(if (over) R.string.nearby_groundwater_over else R.string.nearby_groundwater_limit, limitText),
+            style = MaterialTheme.typography.bodySmall,
+            color = if (over) Palette.NonConform else Color.Unspecified,
+        )
     }
 }
 

@@ -147,6 +147,15 @@ class ScreensQaTest {
     }
 
     @Test
+    fun `should show the flow class and the last groundwater sampling when the nearby screen opens`() {
+        show("nearby-observations") { NearbyScreen("27681", navigator) }
+        waitFor("Observé le")
+        waitFor("Coule")
+        waitFor("44 substances analysées, 34 quantifiées")
+        waitFor("Norme 50 mg/L")
+    }
+
+    @Test
     fun `should hide the river sections when the groundwater tab is picked`() {
         show("nearby-groundwater") { NearbyScreen("27681", navigator) }
         waitFor("Rivière en direct")
@@ -233,7 +242,9 @@ class ScreensQaTest {
             "temperature/station" to "temperature_stations.json",
             "temperature/chronique" to "temperature_chronique.json",
             "ecoulement/stations" to "ecoulement_stations.json",
-            "qualite_nappes/stations" to "nappes_stations.json",
+            "ecoulement/observations" to "ecoulement_observations.json",
+            "qualite_nappes/stations" to "nappes_stations_vernon.json",
+            "qualite_nappes/analyses" to "nappes_analyses.json",
         )
     }
 }

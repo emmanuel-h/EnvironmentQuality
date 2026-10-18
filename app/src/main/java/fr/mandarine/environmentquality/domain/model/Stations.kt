@@ -48,7 +48,36 @@ data class GroundwaterStation(
     val waterBody: String?,
     val altitude: Double?,
     val location: GeoPoint?,
+    /** The day of the station's last sampling; null when it never reported one. */
+    val lastSampledOn: LocalDate? = null,
 )
+
+/** One analysed substance of a groundwater sampling. */
+data class GroundwaterResult(
+    val code: Int,
+    val name: String,
+    val value: Double?,
+    val unit: String?,
+    /** False when the substance stayed below what the laboratory can detect or quantify. */
+    val quantified: Boolean,
+)
+
+/** Every result of a groundwater station's sampling on one day. */
+data class GroundwaterSampling(val sampledOn: LocalDate, val results: List<GroundwaterResult>) {
+    val nitrates: GroundwaterResult? get() = results.firstOrNull { it.code == NITRATES }
+    val pesticides: GroundwaterResult? get() = results.firstOrNull { it.code == PESTICIDES_TOTAL }
+    val quantifiedCount: Int get() = results.count { it.quantified }
+
+    companion object {
+        /** Sandre parameter codes. */
+        const val NITRATES = 1340
+        const val PESTICIDES_TOTAL = 6276
+
+        /** Quality standards for groundwater, the same as for drinking water. */
+        const val NITRATES_LIMIT = 50.0
+        const val PESTICIDES_TOTAL_LIMIT = 0.5
+    }
+}
 
 data class FlowStation(
     val code: String,
@@ -58,3 +87,8 @@ data class FlowStation(
     val active: Boolean,
     val location: GeoPoint?,
 )
+
+/** The Onde network's flow classes, from a visual check of the river bed. */
+enum class FlowState { FLOWING, LOW, VISIBLE, NOT_VISIBLE, DRY, UNKNOWN }
+
+data class FlowObservation(val state: FlowState, val observedOn: LocalDate)

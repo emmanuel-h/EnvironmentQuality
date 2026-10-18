@@ -23,7 +23,9 @@ the switch in the Sources tab.
 - **Risks**: seismic zone, radon category, the Géorisques risk families, recognised
   natural disasters and classified industrial sites with their Seveso level.
 - **Nearby**: the closest live river height and flow, water temperature, flow
-  observation stations and groundwater monitoring point.
+  observation stations with their latest flow class (flowing, low, dry…), and the
+  nearest groundwater monitoring point with its last sampling: nitrates, total
+  pesticides and how many substances were quantified.
 - **Compare** two municipalities parameter by parameter.
 - **Follow** municipalities and get a notification when a new sample is published, when
   the water is non-compliant or when a quality reference is exceeded.

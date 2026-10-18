@@ -203,6 +203,25 @@
     <string name="nearby_nature">Type</string>
     <string name="nearby_water_body">Water body</string>
     <string name="nearby_altitude">Altitude</string>
+    <string name="nearby_flow_observed">Observed on %1$s</string>
+    <string name="flow_flowing">Flowing</string>
+    <string name="flow_low">Low</string>
+    <string name="flow_visible">Visible</string>
+    <string name="flow_not_visible">Not visible</string>
+    <string name="flow_dry">Dry</string>
+    <string name="flow_unknown">Not recorded</string>
+    <string name="nearby_flow_legend">Visual check by the Onde network, about once a month from May to September.</string>
+    <string name="nearby_groundwater_sampled">Last sampled on %1$s</string>
+    <string name="nearby_groundwater_none">No analysis published for this point.</string>
+    <string name="nearby_groundwater_nitrates">Nitrates</string>
+    <string name="nearby_groundwater_pesticides">Pesticides (total)</string>
+    <string name="nearby_groundwater_limit">Standard %1$s</string>
+    <string name="nearby_groundwater_over">Above the %1$s standard</string>
+    <string name="nearby_groundwater_not_quantified">Not quantified</string>
+    <plurals name="nearby_groundwater_substances">
+        <item quantity="one">%1$d substance analysed, %2$d quantified</item>
+        <item quantity="other">%1$d substances analysed, %2$d quantified</item>
+    </plurals>
     <string name="nearby_source">Sources: Hub\'Eau (hydrometry, temperature, flow, piezometry), OFB and BRGM.</string>
     <string name="unit_metres">%1$s m</string>
     <string name="unit_flow">%1$s m³/s</string>

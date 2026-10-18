@@ -2,12 +2,15 @@ package fr.mandarine.environmentquality.domain.repository
 
 import fr.mandarine.environmentquality.domain.model.CommuneRisks
 import fr.mandarine.environmentquality.domain.model.DroughtStatus
+import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowStation
+import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
+import java.time.LocalDate
 
 interface DroughtRepository {
     suspend fun status(communeCode: String): DroughtStatus
@@ -24,5 +27,9 @@ interface StationRepository {
     /** The station's last readings, newest first. */
     suspend fun recentTemperatures(stationCode: String): List<TemperatureReading>
     suspend fun groundwaterStations(communeCode: String, departmentCode: String): List<GroundwaterStation>
+    /** The station's results on [sampledOn], usually its last sampling; null when there are none. */
+    suspend fun groundwaterSampling(stationCode: String, sampledOn: LocalDate): GroundwaterSampling?
     suspend fun flowStations(departmentCode: String): List<FlowStation>
+    /** The latest observation of each station that has one, by station code. */
+    suspend fun latestFlows(stationCodes: List<String>): Map<String, FlowObservation>
 }

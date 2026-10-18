@@ -1,6 +1,8 @@
 package fr.mandarine.environmentquality.data.repository
 
+import fr.mandarine.environmentquality.data.remote.FlowObservationDto
 import fr.mandarine.environmentquality.data.remote.FlowStationDto
+import fr.mandarine.environmentquality.data.remote.GroundwaterAnalysisDto
 import fr.mandarine.environmentquality.data.remote.GroundwaterStationDto
 import fr.mandarine.environmentquality.data.remote.HttpClient
 import fr.mandarine.environmentquality.data.remote.HubEauPage
@@ -10,8 +12,12 @@ import fr.mandarine.environmentquality.data.remote.TemperatureDto
 import fr.mandarine.environmentquality.data.remote.TemperatureStationDto
 import fr.mandarine.environmentquality.data.remote.apiJson
 import fr.mandarine.environmentquality.data.remote.buildUrl
+import fr.mandarine.environmentquality.domain.model.FlowObservation
+import fr.mandarine.environmentquality.domain.model.FlowState
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterResult
+import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
@@ -100,10 +106,43 @@ class HubEauStationRepository(
             code = dto.bssId.ifEmpty { dto.code.orEmpty() },
             commune = dto.commune,
             nature = dto.nature,
-            waterBody = dto.waterBody,
+            waterBody = dto.waterBodies.joinToString(", ").ifEmpty { null },
             altitude = dto.altitude,
             location = point(dto.latitude, dto.longitude),
+            lastSampledOn = dto.lastSampledOn?.let(::date),
         )
+    }
+
+    /** A sampling is a few hundred rows, one per substance; `fields` keeps the answer small. */
+    override suspend fun groundwaterSampling(stationCode: String, sampledOn: LocalDate): GroundwaterSampling? {
+        val rows = page(
+            GroundwaterAnalysisDto.serializer(),
+            buildUrl(
+                "$baseUrl/v1/qualite_nappes/analyses",
+                "bss_id" to stationCode,
+                "date_debut_prelevement" to sampledOn,
+                "sort" to "desc",
+                "size" to GROUNDWATER_RESULTS,
+                "fields" to GROUNDWATER_FIELDS,
+            ),
+        )
+        return toSampling(rows)
+    }
+
+    /** Keeps the latest day in the rows: the station may have reported again since its listing was updated. */
+    internal fun toSampling(rows: List<GroundwaterAnalysisDto>): GroundwaterSampling? {
+        val dated = rows.mapNotNull { row -> row.sampledAt?.take(10)?.let(::date)?.let { it to row } }
+        val day = dated.maxOfOrNull { it.first } ?: return null
+        val results = dated.filter { it.first == day }.mapNotNull { (_, row) ->
+            GroundwaterResult(
+                code = row.code ?: return@mapNotNull null,
+                name = row.name ?: row.code.toString(),
+                value = row.resultat,
+                unit = row.unit,
+                quantified = row.remark == 1,
+            )
+        }
+        return GroundwaterSampling(day, results)
     }
 
     override suspend fun flowStations(departmentCode: String): List<FlowStation> =
@@ -121,6 +160,34 @@ class HubEauStationRepository(
             )
         }
 
+    /** Every station of a department is checked on the same campaign day, about monthly. */
+    override suspend fun latestFlows(stationCodes: List<String>): Map<String, FlowObservation> {
+        if (stationCodes.isEmpty()) return emptyMap()
+        val rows = page(
+            FlowObservationDto.serializer(),
+            buildUrl(
+                "$baseUrl/v1/ecoulement/observations",
+                "code_station" to stationCodes.joinToString(","),
+                "sort" to "desc",
+                "size" to stationCodes.size * FLOW_CAMPAIGNS,
+                "fields" to "code_station,date_observation,code_ecoulement",
+            ),
+        )
+        return rows
+            .mapNotNull { dto -> dto.observedOn?.let(::date)?.let { dto.stationCode to FlowObservation(flowState(dto.code), it) } }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, observations) -> observations.maxBy { it.observedOn } }
+    }
+
+    private fun flowState(code: String?) = when (code) {
+        "1a" -> FlowState.FLOWING
+        "1f" -> FlowState.LOW
+        "1" -> FlowState.VISIBLE
+        "2" -> FlowState.NOT_VISIBLE
+        "3" -> FlowState.DRY
+        else -> FlowState.UNKNOWN
+    }
+
     private suspend fun <T> page(serializer: KSerializer<T>, url: String): List<T> =
         apiJson.decodeFromString(HubEauPage.serializer(serializer), http.get(url)).data
 
@@ -129,7 +196,13 @@ class HubEauStationRepository(
 
     private fun instant(text: String): Instant? = runCatching { Instant.parse(text) }.getOrNull()
 
+    private fun date(text: String): LocalDate? = runCatching { LocalDate.parse(text) }.getOrNull()
+
     private companion object {
         const val TEMPERATURE_READINGS = 14 * 24
+        const val GROUNDWATER_RESULTS = 1000
+        const val GROUNDWATER_FIELDS = "date_debut_prelevement,code_param,nom_param,resultat,symbole_unite,code_remarque_analyse"
+        /** Enough rows for each station's last few campaigns, in case one was skipped. */
+        const val FLOW_CAMPAIGNS = 3
     }
 }
