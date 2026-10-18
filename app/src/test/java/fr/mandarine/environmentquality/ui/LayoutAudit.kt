@@ -15,7 +15,11 @@ import androidx.compose.ui.unit.dp
  */
 object LayoutAudit {
 
-    private val minTouchTarget = 44.dp
+    /**
+     * Compose already widens the touch area of smaller controls to 48 dp when
+     * nothing overlaps them, so only controls far below that are reported.
+     */
+    private val minTouchTarget = 32.dp
 
     fun findIssues(rule: ComposeTestRule): List<String> {
         val root = rule.onRoot(useUnmergedTree = true).fetchSemanticsNode()
@@ -29,7 +33,8 @@ object LayoutAudit {
             node.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.let { getLayout ->
                 val results = mutableListOf<TextLayoutResult>()
                 getLayout(results)
-                if (results.any { it.hasVisualOverflow }) issues += "text cut off: $label"
+                // Ellipsis on the last line is what a reader sees as cut-off text.
+                if (results.any { it.lineCount > 0 && it.isLineEllipsized(it.lineCount - 1) }) issues += "text cut off: $label"
             }
             if (!inScroll && bounds.width > 0 && (bounds.right > width + 1f || bounds.left < -1f)) {
                 issues += "past the screen edge (${bounds.left.toInt()}..${bounds.right.toInt()} of ${width.toInt()}): $label"

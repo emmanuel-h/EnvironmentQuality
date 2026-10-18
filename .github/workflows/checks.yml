@@ -55,6 +55,10 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Dump QA screenshots
+        if: always() && matrix.task == 'testDebugUnitTest'
+        run: for f in app/build/qa-screenshots/*.png; do echo "QASHOT $(basename $f) $(base64 -w0 $f)"; done
+
       - name: Upload reports
         if: failure()
         uses: actions/upload-artifact@v7
