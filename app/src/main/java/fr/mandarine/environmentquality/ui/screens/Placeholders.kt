@@ -19,10 +19,6 @@ private fun Placeholder(title: String, navigator: Navigator, back: Boolean) {
     }
 }
 
-@Composable fun MapScreen(navigator: Navigator) = Placeholder(stringResource(R.string.app_name), navigator, back = false)
-
-@Composable fun SearchScreen(navigator: Navigator) = Placeholder(stringResource(R.string.tab_search), navigator, back = false)
-
 @Composable fun FollowsScreen(navigator: Navigator) = Placeholder(stringResource(R.string.tab_follows), navigator, back = false)
 
 @Composable fun SourcesScreen(navigator: Navigator) = Placeholder(stringResource(R.string.tab_sources), navigator, back = false)
