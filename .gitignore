@@ -1,15 +1,18 @@
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea/
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+.claude/settings.local.json
+# Kotlin compiler session/error scratch dir, created by the Compose plugin build
+.kotlin/
+
+# Keystore files — never commit signing keys to source control
+*.jks
+*.keystore
+

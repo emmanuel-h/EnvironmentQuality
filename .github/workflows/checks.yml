@@ -1,0 +1,56 @@
+# The gates, run by something other than whoever remembers to.
+#
+# `release` is its own job because R8, resource shrinking and the Compose
+# compiler are not exercised by any debug build: a compiler bump can break
+# `bundleRelease` and only `bundleRelease` while the unit tests stay green.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: unit tests
+            task: testDebugUnitTest
+          # NewApi is fatal: it is what stands between minSdk 24 and java.time.
+          - name: lint
+            task: lintDebug
+          - name: release bundle
+            task: bundleRelease lintVitalRelease
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: ./gradlew ${{ matrix.task }}
+        run: ./gradlew --no-daemon ${{ matrix.task }}
+
+      - name: Upload reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports-${{ strategy.job-index }}
+          path: |
+            app/build/reports/
+          retention-days: 7
