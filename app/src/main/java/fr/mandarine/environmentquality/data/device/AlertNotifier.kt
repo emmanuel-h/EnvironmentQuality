@@ -19,7 +19,10 @@ import java.time.format.FormatStyle
 import java.util.Locale
 
 /** Posts one notification per alert; tapping it opens the commune's page. */
-class AlertNotifier(private val context: Context) {
+class AlertNotifier(appContext: Context) {
+
+    /** Notifications speak the language chosen in the app, not only the phone's. */
+    private val context: Context = AppLanguage.wrap(appContext)
 
     fun ensureChannel() {
         val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)

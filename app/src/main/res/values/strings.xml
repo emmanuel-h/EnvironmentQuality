@@ -258,6 +258,7 @@
     <string name="source_georisques_body">Risques naturels et industriels, BRGM et ministère</string>
     <string name="source_geo">API Découpage administratif</string>
     <string name="source_geo_body">Communes, codes postaux, contours</string>
+    <string name="sources_language">Langue</string>
     <string name="sources_disclaimer">Application open source. Données en accès libre, sans clé d\'API. En cas de doute sur votre eau, l\'avis officiel de l\'ARS et de votre mairie fait foi.</string>
     <string name="parameters_title">Paramètres analysés</string>
     <string name="parameters_network">réseau %1$s</string>
