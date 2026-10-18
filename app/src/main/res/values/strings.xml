@@ -211,6 +211,26 @@
     <string name="nearby_nature">Nature</string>
     <string name="nearby_water_body">Masse d\'eau</string>
     <string name="nearby_altitude">Altitude</string>
+    <string name="nearby_flow_observed">Observé le %1$s</string>
+    <string name="flow_flowing">Coule</string>
+    <string name="flow_low">Faible</string>
+    <string name="flow_visible">Visible</string>
+    <string name="flow_not_visible">Non visible</string>
+    <string name="flow_dry">À sec</string>
+    <string name="flow_unknown">Non renseigné</string>
+    <string name="nearby_flow_legend">Constat visuel du réseau Onde, environ une fois par mois de mai à septembre.</string>
+    <string name="nearby_groundwater_sampled">Dernier prélèvement le %1$s</string>
+    <string name="nearby_groundwater_none">Aucune analyse publiée pour ce point.</string>
+    <string name="nearby_groundwater_nitrates">Nitrates</string>
+    <string name="nearby_groundwater_pesticides">Pesticides (total)</string>
+    <string name="nearby_groundwater_limit">Norme %1$s</string>
+    <string name="nearby_groundwater_over">Au-dessus de la norme de %1$s</string>
+    <string name="nearby_groundwater_not_quantified">Non quantifié</string>
+    <plurals name="nearby_groundwater_substances">
+        <item quantity="one">%1$d substance analysée, %2$d quantifiée</item>
+        <item quantity="many">%1$d substances analysées, %2$d quantifiées</item>
+        <item quantity="other">%1$d substances analysées, %2$d quantifiées</item>
+    </plurals>
     <string name="nearby_source">Sources : Hub\'Eau (hydrométrie, température, écoulement, piézométrie), OFB et BRGM.</string>
     <string name="unit_metres">%1$s m</string>
     <string name="unit_flow">%1$s m³/s</string>

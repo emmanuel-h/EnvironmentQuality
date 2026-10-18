@@ -80,10 +80,23 @@ internal data class GroundwaterStationDto(
     @SerialName("nom_commune") val commune: String? = null,
     @SerialName("code_insee") val communeCode: String? = null,
     @SerialName("nom_nature_pe") val nature: String? = null,
-    @SerialName("noms_masse_eau_edl") val waterBody: String? = null,
+    /** A list: a point can tap several stacked aquifers. */
+    @SerialName("noms_masse_eau_edl") val waterBodies: List<String> = emptyList(),
     val altitude: Double? = null,
     val longitude: Double? = null,
     val latitude: Double? = null,
+    @SerialName("date_fin_mesure") val lastSampledOn: String? = null,
+)
+
+@Serializable
+internal data class GroundwaterAnalysisDto(
+    @SerialName("date_debut_prelevement") val sampledAt: String? = null,
+    @SerialName("code_param") val code: Int? = null,
+    @SerialName("nom_param") val name: String? = null,
+    val resultat: Double? = null,
+    @SerialName("symbole_unite") val unit: String? = null,
+    /** Sandre remark code: 1 is a quantified result, others are below a detection or quantification limit. */
+    @SerialName("code_remarque_analyse") val remark: Int? = null,
 )
 
 @Serializable
@@ -95,4 +108,11 @@ internal data class FlowStationDto(
     @SerialName("etat_station") val state: String? = null,
     val longitude: Double? = null,
     val latitude: Double? = null,
+)
+
+@Serializable
+internal data class FlowObservationDto(
+    @SerialName("code_station") val stationCode: String = "",
+    @SerialName("date_observation") val observedOn: String? = null,
+    @SerialName("code_ecoulement") val code: String? = null,
 )

@@ -86,6 +86,15 @@ class ScreensDeviceTest {
     }
 
     @Test
+    fun should_show_the_flow_class_and_the_last_groundwater_sampling_when_the_nearby_screen_opens() {
+        show { NearbyScreen("27681", navigator) }
+        waitFor(R.string.flow_flowing)
+        waitFor(R.string.nearby_flow_legend)
+        waitFor(R.string.nearby_groundwater_nitrates)
+        waitFor(R.string.nearby_groundwater_pesticides)
+    }
+
+    @Test
     fun should_explain_the_statuses_when_the_sources_tab_opens() {
         show { SourcesScreen(navigator) }
         waitFor(R.string.sources_statuses)
@@ -120,7 +129,9 @@ class ScreensDeviceTest {
             "temperature/station" to "temperature_stations.json",
             "temperature/chronique" to "temperature_chronique.json",
             "ecoulement/stations" to "ecoulement_stations.json",
-            "qualite_nappes/stations" to "nappes_stations.json",
+            "ecoulement/observations" to "ecoulement_observations.json",
+            "qualite_nappes/stations" to "nappes_stations_vernon.json",
+            "qualite_nappes/analyses" to "nappes_analyses.json",
         )
     }
 }

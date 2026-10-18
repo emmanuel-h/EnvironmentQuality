@@ -3,8 +3,10 @@ package fr.mandarine.environmentquality.presentation
 import fr.mandarine.environmentquality.domain.model.CommuneRisks
 import fr.mandarine.environmentquality.domain.model.DailyTemperature
 import fr.mandarine.environmentquality.domain.model.DroughtStatus
+import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
@@ -59,6 +61,10 @@ data class Nearby(
     val flowStations: List<FlowStation>,
     val flowStationCount: Int,
     val groundwater: GroundwaterStation?,
+    /** The latest observation of each shown flow station that has one, by station code. */
+    val flows: Map<String, FlowObservation> = emptyMap(),
+    /** The results of [groundwater]'s last sampling. */
+    val groundwaterSampling: GroundwaterSampling? = null,
 )
 
 /** The stations of the commune's department, nearest first, and their latest values. */
@@ -77,16 +83,40 @@ class NearbyViewModel(
         val centre = commune.centre
         val river = async { runCatching { liveRiver(department, centre) }.getOrNull() }
         val temperature = async { runCatching { temperature(department, centre) }.getOrNull() }
-        val flows = async { runCatching { stations.flowStations(department) }.getOrDefault(emptyList()) }
-        val groundwater = async { runCatching { stations.groundwaterStations(code, department) }.getOrDefault(emptyList()) }
-        val flowList = flows.await()
+        val flowList = async { runCatching { stations.flowStations(department) }.getOrDefault(emptyList()) }
+        val groundwaterList = async { runCatching { stations.groundwaterStations(code, department) }.getOrDefault(emptyList()) }
+        val shownFlows = async { nearest(flowList.await(), centre) { it.location }.take(FLOWS_SHOWN) }
+        val latestFlows = async { runCatching { stations.latestFlows(shownFlows.await().map { it.code }) }.getOrDefault(emptyMap()) }
+        val groundwater = async { groundwaterStation(groundwaterList.await(), centre) }
+        val sampling = async {
+            val station = groundwater.await() ?: return@async null
+            val day = station.lastSampledOn ?: return@async null
+            runCatching { stations.groundwaterSampling(station.code, day) }.getOrNull()
+        }
         Nearby(
             river = river.await(),
             temperature = temperature.await(),
-            flowStations = nearest(flowList, centre) { it.location }.take(3),
-            flowStationCount = flowList.size,
-            groundwater = nearest(groundwater.await(), centre) { it.location }.firstOrNull(),
+            flowStations = shownFlows.await(),
+            flowStationCount = flowList.await().size,
+            groundwater = groundwater.await(),
+            flows = latestFlows.await(),
+            groundwaterSampling = sampling.await(),
         )
+    }
+
+    /**
+     * The nearest station sampled in the few years before the latest sampling around;
+     * many points stopped reporting decades ago. Wells at one spot go to the latest sampled.
+     */
+    private fun groundwaterStation(all: List<GroundwaterStation>, centre: GeoPoint?): GroundwaterStation? {
+        val newest = all.mapNotNull { it.lastSampledOn }.maxOrNull()
+        val recent = if (newest == null) all else all.filter { it.lastSampledOn?.isBefore(newest.minusYears(RECENT_YEARS)) == false }
+        return recent
+            .sortedWith(
+                compareBy<GroundwaterStation> { station -> distance(centre, station.location) ?: Double.MAX_VALUE }
+                    .thenByDescending { it.lastSampledOn },
+            )
+            .firstOrNull()
     }
 
     /** The nearest station that actually reports, trying a few. */
@@ -112,4 +142,9 @@ class NearbyViewModel(
 
     private fun distance(centre: GeoPoint?, point: GeoPoint?) =
         if (centre != null && point != null) centre.distanceKm(point) else null
+
+    private companion object {
+        const val FLOWS_SHOWN = 3
+        const val RECENT_YEARS = 3L
+    }
 }
