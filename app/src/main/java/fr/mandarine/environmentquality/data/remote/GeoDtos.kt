@@ -90,4 +90,14 @@ internal data class InstallationDto(
     val etatActivite: String? = null,
     val longitude: Double? = null,
     val latitude: Double? = null,
+    val inspections: List<InspectionDto> = emptyList(),
 )
+
+@Serializable
+internal data class InspectionDto(
+    val dateInspection: String? = null,
+    val fichierInspection: InspectionFileDto? = null,
+)
+
+@Serializable
+internal data class InspectionFileDto(val urlFichier: String? = null)

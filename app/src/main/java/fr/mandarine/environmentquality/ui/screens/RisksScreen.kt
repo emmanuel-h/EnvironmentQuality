@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -272,15 +274,32 @@ private fun SitesSection(sites: List<IndustrialSite>) {
                     Text(site.name, style = MaterialTheme.typography.titleSmall)
                     val detail = listOfNotNull(site.activity, site.regime).joinToString(" · ")
                     if (detail.isNotEmpty()) Text(detail, style = MaterialTheme.typography.bodySmall)
+                    site.lastInspection?.let {
+                        Text(stringResource(R.string.risks_last_inspection, Format.mediumDate(it)), style = MaterialTheme.typography.bodySmall)
+                    }
                 }
                 SevesoBadge(site.seveso)
             }
+            site.inspectionReportUrl?.let { url -> InspectionReportLink(url) }
         }
         val others = ordered.size - SITES_SHOWN
         if (others > 0) {
             Spacer(Modifier.height(10.dp))
             Text(pluralStringResource(R.plurals.risks_other_sites, others, others), style = MaterialTheme.typography.bodySmall)
         }
+    }
+}
+
+@Composable
+private fun InspectionReportLink(url: String) {
+    val uriHandler = LocalUriHandler.current
+    TextButton(
+        onClick = { runCatching { uriHandler.openUri(url) } },
+        contentPadding = PaddingValues(start = 28.dp),
+    ) {
+        Icon(AppIcons.External, contentDescription = null, tint = Palette.Water, modifier = Modifier.size(16.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(stringResource(R.string.risks_inspection_report), color = Palette.Water, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
     }
 }
 

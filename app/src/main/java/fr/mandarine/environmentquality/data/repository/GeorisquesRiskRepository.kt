@@ -68,18 +68,25 @@ class GeorisquesRiskRepository(
         published = parseFrenchDate(dto.published),
     )
 
-    private fun toSite(dto: InstallationDto) = IndustrialSite(
-        name = dto.raisonSociale.trim(),
-        regime = dto.regime,
-        seveso = when (dto.statutSeveso?.lowercase()) {
-            null -> SevesoStatus.UNKNOWN
-            "seveso seuil haut" -> SevesoStatus.HIGH
-            "seveso seuil bas" -> SevesoStatus.LOW
-            else -> if ("haut" in dto.statutSeveso.lowercase()) SevesoStatus.HIGH else SevesoStatus.NONE
-        },
-        activity = dto.etatActivite,
-        location = if (dto.latitude != null && dto.longitude != null) GeoPoint(dto.latitude, dto.longitude) else null,
-    )
+    private fun toSite(dto: InstallationDto): IndustrialSite {
+        val inspections = dto.inspections
+            .mapNotNull { inspection -> parseIsoDate(inspection.dateInspection)?.let { it to inspection.fichierInspection?.urlFichier } }
+            .sortedByDescending { it.first }
+        return IndustrialSite(
+            name = dto.raisonSociale.trim(),
+            regime = dto.regime,
+            seveso = when (dto.statutSeveso?.lowercase()) {
+                null -> SevesoStatus.UNKNOWN
+                "seveso seuil haut" -> SevesoStatus.HIGH
+                "seveso seuil bas" -> SevesoStatus.LOW
+                else -> if ("haut" in dto.statutSeveso.lowercase()) SevesoStatus.HIGH else SevesoStatus.NONE
+            },
+            activity = dto.etatActivite,
+            location = if (dto.latitude != null && dto.longitude != null) GeoPoint(dto.latitude, dto.longitude) else null,
+            lastInspection = inspections.firstOrNull()?.first,
+            inspectionReportUrl = inspections.firstNotNullOfOrNull { it.second?.takeIf(String::isNotBlank) },
+        )
+    }
 
     private fun sevesoRank(status: SevesoStatus) = when (status) {
         SevesoStatus.HIGH -> 0
@@ -87,6 +94,9 @@ class GeorisquesRiskRepository(
         SevesoStatus.NONE -> 2
         SevesoStatus.UNKNOWN -> 3
     }
+
+    private fun parseIsoDate(text: String?): LocalDate? =
+        text?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
 
     private fun parseFrenchDate(text: String?): LocalDate? =
         text?.let { runCatching { LocalDate.parse(it, FRENCH_DATE) }.getOrNull() }
