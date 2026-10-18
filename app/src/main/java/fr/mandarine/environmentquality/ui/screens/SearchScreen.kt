@@ -115,39 +115,43 @@ internal fun SearchContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(stringResource(R.string.tab_search), style = MaterialTheme.typography.headlineMedium)
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Palette.Field)
-                    .border(2.dp, Palette.Water, RoundedCornerShape(16.dp))
-                    .padding(horizontal = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(AppIcons.Search, contentDescription = null, tint = Palette.Ink, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(12.dp))
-                val hint = stringResource(R.string.search_hint)
-                Box(Modifier.weight(1f)) {
-                    if (state.query.isEmpty()) Text(hint, color = Palette.InkSecondary, fontSize = 16.sp)
-                    BasicTextField(
-                        value = state.query,
-                        onValueChange = onQuery,
-                        singleLine = true,
-                        textStyle = TextStyle(fontFamily = PublicSans, fontSize = 16.sp, color = Palette.Ink),
-                        cursorBrush = SolidColor(Palette.Water),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        modifier = Modifier.fillMaxWidth().semantics { contentDescription = hint },
-                    )
-                }
-                if (state.query.isNotEmpty()) {
-                    IconButton(onClick = { onQuery("") }) {
-                        Box(Modifier.size(32.dp).clip(CircleShape).background(Palette.ChipBorder), contentAlignment = Alignment.Center) {
-                            Icon(AppIcons.Close, stringResource(R.string.action_clear), tint = Palette.Ink, modifier = Modifier.size(14.dp))
+            val hint = stringResource(R.string.search_hint)
+            // The whole field is the text field, so a tap anywhere in it brings up the keyboard.
+            BasicTextField(
+                value = state.query,
+                onValueChange = onQuery,
+                singleLine = true,
+                textStyle = TextStyle(fontFamily = PublicSans, fontSize = 16.sp, color = Palette.Ink),
+                cursorBrush = SolidColor(Palette.Water),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                modifier = Modifier.fillMaxWidth().semantics { contentDescription = hint },
+                decorationBox = { innerField ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Palette.Field)
+                            .border(2.dp, Palette.Water, RoundedCornerShape(16.dp))
+                            .padding(horizontal = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(AppIcons.Search, contentDescription = null, tint = Palette.Ink, modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Box(Modifier.weight(1f)) {
+                            if (state.query.isEmpty()) Text(hint, color = Palette.InkSecondary, fontSize = 16.sp)
+                            innerField()
+                        }
+                        if (state.query.isNotEmpty()) {
+                            IconButton(onClick = { onQuery("") }) {
+                                Box(Modifier.size(32.dp).clip(CircleShape).background(Palette.ChipBorder), contentAlignment = Alignment.Center) {
+                                    Icon(AppIcons.Close, stringResource(R.string.action_clear), tint = Palette.Ink, modifier = Modifier.size(14.dp))
+                                }
+                            }
                         }
                     }
-                }
-            }
+                },
+            )
             Row(
                 Modifier
                     .fillMaxWidth()

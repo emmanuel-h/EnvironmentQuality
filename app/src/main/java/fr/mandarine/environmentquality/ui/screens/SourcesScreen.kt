@@ -186,7 +186,7 @@ private fun LanguageRow() {
                                 if (!selected && activity != null) AppLanguage.set(activity, tag)
                             }
                             .semantics { contentDescription = name }
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 10.dp),
                     )
                 }
             }
