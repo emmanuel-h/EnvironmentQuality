@@ -156,6 +156,8 @@
         <item quantity="one">and %1$d other site</item>
         <item quantity="other">and %1$d other sites</item>
     </plurals>
+    <string name="risks_last_inspection">Last inspected on %1$s</string>
+    <string name="risks_inspection_report">Read the inspection report</string>
     <string name="seveso_high">Seveso upper tier</string>
     <string name="seveso_low">Seveso lower tier</string>
     <string name="risks_source">Source: Géorisques, French Ministry for the Ecological Transition.</string>

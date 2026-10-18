@@ -65,6 +65,28 @@ class EnvironmentRepositoriesTest {
     }
 
     @Test
+    fun `should keep the latest inspection and its report when a site has several visits`() = runTest {
+        val http = FakeHttpClient(
+            listOf(
+                "gaspar/risques" to "georisques_risques.json",
+                "gaspar/catnat" to "georisques_catnat.json",
+                "radon" to "georisques_radon.json",
+                "zonage_sismique" to "georisques_sismique.json",
+                "installations_classees" to "georisques_installations.json",
+            ),
+        )
+
+        val sites = GeorisquesRiskRepository(http).risks("27681").sites
+        val ariane = sites.first { it.name == "ARIANEGROUP SAS" }
+        val quarry = sites.first { it.name.startsWith("Carrières") }
+
+        assertEquals(LocalDate.of(2025, 3, 25), ariane.lastInspection)
+        assertEquals("https://www.georisques.gouv.fr/webappReport/ws/installations/inspection/I1fQZsy0SVPka3suw0gaJhjeNvmTs0O7", ariane.inspectionReportUrl)
+        assertEquals(LocalDate.of(2017, 4, 3), quarry.lastInspection)
+        assertEquals(null, quarry.inspectionReportUrl)
+    }
+
+    @Test
     fun `should convert millimetres and litres per second when reading live river data`() = runTest {
         val repository = HubEauStationRepository(FakeHttpClient(listOf("observations_tr" to "hydro_observations.json")))
 

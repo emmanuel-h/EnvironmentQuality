@@ -161,6 +161,8 @@
         <item quantity="many">et %1$d autres sites</item>
         <item quantity="other">et %1$d autres sites</item>
     </plurals>
+    <string name="risks_last_inspection">Dernière inspection le %1$s</string>
+    <string name="risks_inspection_report">Lire le rapport d\'inspection</string>
     <string name="seveso_high">Seveso seuil haut</string>
     <string name="seveso_low">Seveso seuil bas</string>
     <string name="risks_source">Source : Géorisques, ministère de la Transition écologique.</string>

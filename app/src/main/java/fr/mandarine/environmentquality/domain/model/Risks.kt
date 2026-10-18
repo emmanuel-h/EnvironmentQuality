@@ -20,6 +20,9 @@ data class IndustrialSite(
     val seveso: SevesoStatus,
     val activity: String?,
     val location: GeoPoint?,
+    val lastInspection: LocalDate? = null,
+    /** The published report of the most recent inspection that has one; older visits often have none. */
+    val inspectionReportUrl: String? = null,
 )
 
 data class CommuneRisks(
