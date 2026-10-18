@@ -75,7 +75,9 @@ class ScreensQaTest {
 
     @After
     fun tearDown() {
+        screen?.let { capture(it) }
         database.close()
+        assertTrue("Layout issues:\n" + issues.distinct().joinToString("\n"), issues.isEmpty())
     }
 
     @Test
@@ -95,7 +97,7 @@ class ScreensQaTest {
         composeRule.setContent { EnvironmentQualityTheme { EnvironmentQualityRoot(alertCommune = "27681") } }
         waitFor("Paramètres clés")
         waitFor("Vernon")
-        capture("commune")
+        screen = "commune"
     }
 
     @Test
@@ -140,7 +142,6 @@ class ScreensQaTest {
         composeRule.waitForIdle()
         assertFalse(exists("Rivière en direct"))
         assertTrue(exists("Nappe la plus proche"))
-        capture("nearby-groundwater")
     }
 
     @Test
@@ -179,22 +180,24 @@ class ScreensQaTest {
                 Box(Modifier.fillMaxSize().background(Palette.Background)) { content() }
             }
         }
-        // Screenshots are taken once the screen has loaded; see waitFor.
-        pendingCapture = name
+        screen = name
     }
 
-    private var pendingCapture: String? = null
+    /** Captured and audited once the test has waited for the screen to load. */
+    private var screen: String? = null
 
     private fun exists(text: String): Boolean =
         composeRule.onAllNodesWithText(text, substring = true).fetchSemanticsNodes().isNotEmpty()
 
     private fun waitFor(text: String) {
         composeRule.waitUntil(timeoutMillis = 10_000) { exists(text) }
-        pendingCapture?.let { capture(it) }
     }
+
+    private val issues = mutableListOf<String>()
 
     private fun capture(name: String) {
         composeRule.waitForIdle()
+        issues += LayoutAudit.findIssues(composeRule).map { "[$name] $it" }
         val bitmap = composeRule.onRoot().captureToImage().asAndroidBitmap()
         val dir = File("build/qa-screenshots").apply { mkdirs() }
         File(dir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
