@@ -76,6 +76,7 @@ import fr.mandarine.environmentquality.ui.components.droughtAdvice
 import fr.mandarine.environmentquality.ui.components.droughtAdviceNoDate
 import fr.mandarine.environmentquality.ui.components.gaugeColor
 import fr.mandarine.environmentquality.ui.components.look
+import fr.mandarine.environmentquality.ui.components.rememberNotificationPermissionRequest
 import fr.mandarine.environmentquality.ui.navigation.CompareKey
 import fr.mandarine.environmentquality.ui.navigation.DroughtKey
 import fr.mandarine.environmentquality.ui.navigation.HistoryKey
@@ -104,6 +105,7 @@ fun CommuneScreen(code: String, navigator: Navigator) {
     val pending = remember { mutableStateOf<CsvExport?>(null) }
     val saved = stringResource(R.string.csv_saved)
     val failed = stringResource(R.string.csv_failed)
+    val requestNotifications = rememberNotificationPermissionRequest()
     val createFile = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         val export = pending.value ?: return@rememberLauncherForActivityResult
         pending.value = null
@@ -121,7 +123,10 @@ fun CommuneScreen(code: String, navigator: Navigator) {
         state = state,
         onBack = navigator::back,
         onRetry = viewModel::refresh,
-        onToggleFollow = viewModel::toggleFollow,
+        onToggleFollow = {
+            if (!state.followed) requestNotifications()
+            viewModel.toggleFollow()
+        },
         onParameters = { navigator.open(ParametersKey(code)) },
         onHistory = { navigator.open(HistoryKey(code)) },
         onNearby = { navigator.open(NearbyKey(code)) },

@@ -70,6 +70,13 @@ class HubEauWaterQualityRepository(
         return toHistory(rows, YearMonth.from(since))
     }
 
+    override suspend fun latestPublication(): LocalDate? =
+        fetch(buildUrl("$baseUrl/resultats_dis", "size" to 1, "sort" to "desc"))
+            .firstOrNull()
+            ?.let { parseInstant(it.sampledAt) }
+            ?.atZone(zone)
+            ?.toLocalDate()
+
     private suspend fun latestRow(communeCode: String): ResultatDisDto? =
         fetch(buildUrl("$baseUrl/resultats_dis", "code_commune" to communeCode, "size" to 1, "sort" to "desc"))
             .firstOrNull { it.sampleCode.isNotEmpty() }
