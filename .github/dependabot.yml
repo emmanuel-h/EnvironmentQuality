@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    # The compose plugin must match the Kotlin version AGP embeds. Past it, the
+    # release-only produceReleaseComposeMapping task fails to resolve
+    # compose-group-mapping, and only bundleRelease notices. Bump it by hand
+    # together with AGP.
+    ignore:
+      - dependency-name: org.jetbrains.kotlin.plugin.compose
+    commit-message:
+      prefix: chore
+      include: scope
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
