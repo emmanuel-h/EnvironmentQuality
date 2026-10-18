@@ -126,6 +126,18 @@ fun ScreenHeader(
     }
 }
 
+/** Large title and subtitle at the top of a tab without a back arrow. */
+@Composable
+fun TabHeader(title: String, subtitle: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(title, style = MaterialTheme.typography.headlineLarge, modifier = Modifier.semantics { heading() })
+        Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = Palette.InkSecondary)
+    }
+}
+
 @Composable
 fun SectionTitle(text: String, modifier: Modifier = Modifier, action: (@Composable () -> Unit)? = null) {
     Row(

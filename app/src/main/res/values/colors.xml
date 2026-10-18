@@ -2,8 +2,9 @@
 <resources>
     <!--
         The palette lives in EnvironmentQualityTheme, not here. The only consumers of
-        a colour resource are the window painted before Compose draws and the splash
-        screen that hands over to it.
+        a colour resource are the window painted before Compose draws, the splash
+        screen that hands over to it, and the accent of alert notifications.
     -->
     <color name="surface">#F7FAF9</color>
+    <color name="water">#0B6E99</color>
 </resources>

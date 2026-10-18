@@ -75,4 +75,9 @@ class HubEauWaterQualityRepositoryTest {
 
         assertNull(empty.latestSample("00000"))
     }
+
+    @Test
+    fun `should give the latest sampling day when asking for the national publication date`() = runTest {
+        assertEquals(LocalDate.of(2026, 7, 29), repository.latestPublication())
+    }
 }

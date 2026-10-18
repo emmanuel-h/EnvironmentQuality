@@ -13,4 +13,7 @@ interface WaterQualityRepository {
     suspend fun latestStatus(communeCode: String): LatestStatus?
     suspend fun latestSample(communeCode: String): WaterSample?
     suspend fun history(communeCode: String, since: LocalDate): WaterHistory
+
+    /** The date of the most recent sample published anywhere in France. */
+    suspend fun latestPublication(): LocalDate?
 }

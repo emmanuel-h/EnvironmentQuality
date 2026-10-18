@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,9 +47,12 @@ import fr.mandarine.environmentquality.ui.theme.Palette
 fun appContainer(): AppContainer = (LocalContext.current.applicationContext as EnvironmentQualityApp).container
 
 @Composable
-fun EnvironmentQualityRoot() {
+fun EnvironmentQualityRoot(alertCommune: String? = null) {
     val backStack = rememberNavBackStack(MapKey)
     val navigator = remember(backStack) { Navigator(backStack) }
+    LaunchedEffect(alertCommune) {
+        if (alertCommune != null && backStack.lastOrNull() != CommuneKey(alertCommune)) navigator.open(CommuneKey(alertCommune))
+    }
     Scaffold(
         containerColor = Palette.Background,
         bottomBar = { BottomBar(current = navigator.currentTab, onSelect = navigator::selectTab) },
