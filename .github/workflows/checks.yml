@@ -46,6 +46,27 @@ jobs:
       - name: ./gradlew ${{ matrix.task }}
         run: ./gradlew --no-daemon ${{ matrix.task }}
 
+      - name: Upload QA screenshots
+        if: always() && matrix.task == 'testDebugUnitTest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: qa-screenshots
+          path: app/build/qa-screenshots/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # TEMPORARY: lets the screenshots be read from the job log; removed before merge.
+      - name: Dump QA screenshots
+        if: always() && matrix.task == 'testDebugUnitTest'
+        run: |
+          for f in app/build/qa-screenshots/*.png; do
+            [ -f "$f" ] || continue
+            echo "QAIMG-BEGIN $(basename "$f")"
+            base64 -w 0 "$f" | fold -w 4000
+            echo
+            echo "QAIMG-END"
+          done
+
       - name: Upload reports
         if: failure()
         uses: actions/upload-artifact@v7

@@ -8,6 +8,7 @@ import fr.mandarine.environmentquality.data.local.RoomRecentRepository
 import fr.mandarine.environmentquality.data.local.RoomResponseCache
 import fr.mandarine.environmentquality.data.local.RoomSettingsRepository
 import fr.mandarine.environmentquality.data.remote.CachingHttpClient
+import fr.mandarine.environmentquality.data.remote.HttpClient
 import fr.mandarine.environmentquality.data.remote.UrlConnectionHttpClient
 import fr.mandarine.environmentquality.data.repository.GeoCommuneRepository
 import fr.mandarine.environmentquality.data.repository.GeorisquesRiskRepository
@@ -29,12 +30,18 @@ import fr.mandarine.environmentquality.domain.usecase.CompareCommunesUseCase
 import fr.mandarine.environmentquality.domain.usecase.FollowCommuneUseCase
 import fr.mandarine.environmentquality.domain.usecase.SearchCommunesUseCase
 
-/** Manual dependency wiring: one instance of each repository for the process. */
-class AppContainer(context: Context) {
+/**
+ * Manual dependency wiring: one instance of each repository for the process.
+ * Tests pass their own [network] and in-memory [database].
+ */
+class AppContainer(
+    context: Context,
+    network: HttpClient = UrlConnectionHttpClient(userAgent = "EnvironmentQuality (Android; open source)"),
+    database: AppDatabase = AppDatabase.build(context),
+) {
 
-    private val database = AppDatabase.build(context)
     private val http = CachingHttpClient(
-        network = UrlConnectionHttpClient(userAgent = "EnvironmentQuality (Android; open source)"),
+        network = network,
         cache = RoomResponseCache(database.cachedResponses()),
     )
 
