@@ -17,3 +17,14 @@ data class Commune(
     val population: Int? = null,
     val centre: GeoPoint? = null,
 )
+
+/** Great-circle distance in kilometres. */
+fun GeoPoint.distanceKm(other: GeoPoint): Double {
+    val r = 6371.0
+    val dLat = Math.toRadians(other.latitude - latitude)
+    val dLon = Math.toRadians(other.longitude - longitude)
+    val a = kotlin.math.sin(dLat / 2).let { it * it } +
+        kotlin.math.cos(Math.toRadians(latitude)) * kotlin.math.cos(Math.toRadians(other.latitude)) *
+        kotlin.math.sin(dLon / 2).let { it * it }
+    return 2 * r * kotlin.math.asin(kotlin.math.sqrt(a))
+}
