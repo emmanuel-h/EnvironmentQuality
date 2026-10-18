@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ActivityScenario
+import fr.mandarine.environmentquality.ui.theme.EnvironmentQualityTheme
 import org.junit.Assert.assertFalse
 import org.junit.Rule
 import org.junit.Test
@@ -35,10 +36,12 @@ class ComposeToolchainTest {
     }
 
     @Test
-    fun `should show the app name when the home screen is composed`() {
-        composeRule.setContent { HomeScreen() }
+    fun `should show the four tabs when the app is composed`() {
+        composeRule.setContent { EnvironmentQualityTheme { EnvironmentQualityRoot() } }
 
-        composeRule.onNodeWithText("Environment Quality").assertIsDisplayed()
+        listOf("Carte", "Rechercher", "Suivis", "Sources").forEach {
+            composeRule.onNodeWithText(it).assertIsDisplayed()
+        }
     }
 
     @Test
