@@ -1,5 +1,6 @@
 package fr.mandarine.environmentquality.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
@@ -9,7 +10,9 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import fr.mandarine.environmentquality.ui.theme.EnvironmentQualityTheme
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Rule
 import org.junit.Test
@@ -51,5 +54,15 @@ class ComposeToolchainTest {
                 assertFalse(activity.isFinishing)
             }
         }
+    }
+
+    // Android Studio's "Default activity" is the MAIN/LAUNCHER activity of the merged manifest.
+    @Test
+    fun `should resolve the main activity as the launcher when the app is installed`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        val launch = context.packageManager.getLaunchIntentForPackage(context.packageName)
+
+        assertEquals(MainActivity::class.java.name, launch?.component?.className)
     }
 }
