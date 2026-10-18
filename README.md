@@ -56,6 +56,7 @@ Requirements: JDK 17 or newer (CI uses 25) and the Android SDK with API 37.
 ./gradlew testDebugUnitTest      # unit and Robolectric tests
 ./gradlew lintDebug              # lint, NewApi is fatal
 ./gradlew bundleRelease lintVitalRelease
+./gradlew connectedDebugAndroidTest   # instrumented tests, needs a device or emulator
 ```
 
 A signed release build reads `RELEASE_KEYSTORE_FILE`, `RELEASE_KEYSTORE_PASSWORD`,
@@ -63,6 +64,8 @@ A signed release build reads `RELEASE_KEYSTORE_FILE`, `RELEASE_KEYSTORE_PASSWORD
 
 `ScreensQaTest` renders every screen against recorded API answers and writes screenshots
 to `app/build/qa-screenshots/`; CI uploads them as the `qa-screenshots` artifact.
+`ScreensDeviceTest` renders the same screens on an Android emulator, which CI boots for
+every push and pull request.
 
 ## Architecture
 

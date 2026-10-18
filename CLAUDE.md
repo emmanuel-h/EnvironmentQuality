@@ -22,10 +22,14 @@ Compose, min SDK 24, target SDK 36. `specs.md` is the product definition.
 
 # Assemble debug APK
 ./gradlew assembleDebug
+
+# Instrumented tests, on a connected device or running emulator
+./gradlew connectedDebugAndroidTest
 ```
 
-CI (`.github/workflows/checks.yml`) runs unit tests, `lintDebug`, and `bundleRelease` +
-`lintVitalRelease` on every push and pull request.
+CI (`.github/workflows/checks.yml`) runs unit tests, `lintDebug`, `bundleRelease` +
+`lintVitalRelease`, and the instrumented tests on an API 35 emulator on every push and
+pull request.
 
 ## Architecture
 
@@ -50,4 +54,6 @@ Test sources mirror the main layout under `app/src/test/java/fr/mandarine/enviro
 - Framework: JUnit4 (`@Test`, `@Before`, `@After`), Robolectric for anything touching Android
 - Mocking: MockK (`mockk<T>()`, `every`, `coEvery`, `verify`, `coVerify`)
 - Coroutines: `kotlinx-coroutines-test` (`runTest`)
-- Test name pattern: `` fun `should <expected behaviour> when <condition>`() ``
+- Test name pattern: `` fun `should <expected behaviour> when <condition>`() ``; in
+  `androidTest`, `fun should_<expected behaviour>_when_<condition>()`, because dex below
+  API 30 rejects spaces in method names
