@@ -137,12 +137,19 @@ private fun ParameterList(sample: WaterSample) {
                     Column(Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.Bottom) {
                             Text(result.name, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                            Spacer(Modifier.width(8.dp))
-                            Text(result.displayValue, fontFamily = Sora, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                            result.unitLabel?.let {
-                                Spacer(Modifier.width(4.dp))
-                                Text(it, fontSize = 12.sp, color = Palette.InkSecondary)
+                            if (result.numericValue != null) {
+                                Spacer(Modifier.width(8.dp))
+                                Text(result.displayValue, fontFamily = Sora, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                                result.unitLabel?.let {
+                                    Spacer(Modifier.width(4.dp))
+                                    Text(it, fontSize = 12.sp, color = Palette.InkSecondary)
+                                }
                             }
+                        }
+                        // A qualitative result is a sentence, not a number: beside the name it
+                        // squeezes the name into a narrow column, so it gets its own line.
+                        if (result.numericValue == null) {
+                            Text(result.displayValue, fontFamily = Sora, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                         }
                         Text(boundLabel(result), fontSize = 12.sp, color = Palette.InkSecondary)
                         Text(groupLabel(result.group), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = Palette.Water)

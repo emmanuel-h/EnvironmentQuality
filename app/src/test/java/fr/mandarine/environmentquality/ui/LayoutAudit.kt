@@ -41,9 +41,11 @@ object LayoutAudit {
             }
             if (node.config.getOrNull(SemanticsActions.OnClick) != null) {
                 if (label.isBlank()) issues += "control without a label at $bounds"
-                if (bounds.width < minTarget - 1f || bounds.height < minTarget - 1f) {
-                    val w = with(density) { bounds.width.toDp().value.toInt() }
-                    val h = with(density) { bounds.height.toDp().value.toInt() }
+                // Measured size, not the visible bounds: a chip half scrolled out of a row is clipped, not small.
+                val size = node.size
+                if (size.width < minTarget - 1f || size.height < minTarget - 1f) {
+                    val w = with(density) { size.width.toDp().value.toInt() }
+                    val h = with(density) { size.height.toDp().value.toInt() }
                     issues += "small touch target ${w}x${h} dp: $label"
                 }
             }

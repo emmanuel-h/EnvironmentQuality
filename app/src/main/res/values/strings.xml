@@ -233,7 +233,7 @@
     <string name="notification_new_sample">%1$s : nouveau prélèvement</string>
     <string name="notification_body">Prélevé le %1$s. Touchez pour voir les résultats.</string>
     <string name="compare_title">Comparer</string>
-    <string name="compare_against">%1$s face à</string>
+    <string name="compare_against">%1$s face à %2$s</string>
     <string name="compare_no_sample">Aucun prélèvement publié</string>
     <string name="compare_months">Mois conformes</string>
     <string name="compare_months_body">sur les 12 derniers</string>

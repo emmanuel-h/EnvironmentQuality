@@ -55,8 +55,10 @@ fun CompareScreen(code: String, navigator: Navigator) {
     }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val name = state.commune.valueOrNull?.name
+    val other = state.candidates.firstOrNull { it.code == state.selected }?.name
+    val subtitle = if (name != null && other != null) stringResource(R.string.compare_against, name, other) else name
     Column(Modifier.fillMaxSize()) {
-        ScreenHeader(stringResource(R.string.compare_title), name?.let { stringResource(R.string.compare_against, it) }, navigator::back)
+        ScreenHeader(stringResource(R.string.compare_title), subtitle, navigator::back)
         if (state.candidates.isNotEmpty()) {
             ChoiceChips(
                 options = state.candidates.map { ChipOption(it.code, it.name) },

@@ -225,7 +225,7 @@
     <string name="notification_new_sample">%1$s: new sample</string>
     <string name="notification_body">Sampled on %1$s. Tap to see the results.</string>
     <string name="compare_title">Compare</string>
-    <string name="compare_against">%1$s compared with</string>
+    <string name="compare_against">%1$s compared with %2$s</string>
     <string name="compare_no_sample">No published sample</string>
     <string name="compare_months">Compliant months</string>
     <string name="compare_months_body">over the last 12</string>
