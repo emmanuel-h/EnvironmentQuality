@@ -21,7 +21,8 @@ interface StationRepository {
     suspend fun hydroStations(departmentCode: String): List<HydroStation>
     suspend fun hydroReading(stationCode: String): HydroReading?
     suspend fun temperatureStations(departmentCode: String): List<TemperatureStation>
-    suspend fun latestTemperature(stationCode: String): TemperatureReading?
+    /** The station's last readings, newest first. */
+    suspend fun recentTemperatures(stationCode: String): List<TemperatureReading>
     suspend fun groundwaterStations(communeCode: String, departmentCode: String): List<GroundwaterStation>
     suspend fun flowStations(departmentCode: String): List<FlowStation>
 }

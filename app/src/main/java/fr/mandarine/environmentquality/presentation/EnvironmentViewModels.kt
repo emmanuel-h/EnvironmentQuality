@@ -1,6 +1,7 @@
 package fr.mandarine.environmentquality.presentation
 
 import fr.mandarine.environmentquality.domain.model.CommuneRisks
+import fr.mandarine.environmentquality.domain.model.DailyTemperature
 import fr.mandarine.environmentquality.domain.model.DroughtStatus
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
@@ -9,6 +10,7 @@ import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
+import fr.mandarine.environmentquality.domain.model.byDay
 import fr.mandarine.environmentquality.domain.model.distanceKm
 import fr.mandarine.environmentquality.domain.repository.CommuneRepository
 import fr.mandarine.environmentquality.domain.repository.DroughtRepository
@@ -43,7 +45,13 @@ class RisksViewModel(
 
 data class LiveRiver(val station: HydroStation, val reading: HydroReading, val distanceKm: Double?)
 
-data class RiverTemperature(val station: TemperatureStation, val reading: TemperatureReading?, val stationCount: Int)
+data class RiverTemperature(
+    val station: TemperatureStation,
+    val reading: TemperatureReading?,
+    val stationCount: Int,
+    /** The last days the station reported, oldest first. */
+    val days: List<DailyTemperature> = emptyList(),
+)
 
 data class Nearby(
     val river: LiveRiver?,
@@ -95,7 +103,8 @@ class NearbyViewModel(
     private suspend fun temperature(department: String, centre: GeoPoint?): RiverTemperature? {
         val all = stations.temperatureStations(department)
         val station = nearest(all, centre) { it.location }.firstOrNull() ?: return null
-        return RiverTemperature(station, runCatching { stations.latestTemperature(station.code) }.getOrNull(), all.size)
+        val readings = runCatching { stations.recentTemperatures(station.code) }.getOrDefault(emptyList())
+        return RiverTemperature(station, readings.maxByOrNull { it.measuredAt }, all.size, readings.byDay())
     }
 
     private fun <T> nearest(items: List<T>, centre: GeoPoint?, location: (T) -> GeoPoint?): List<T> =

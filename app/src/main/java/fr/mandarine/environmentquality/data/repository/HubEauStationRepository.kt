@@ -75,14 +75,15 @@ class HubEauStationRepository(
             buildUrl("$baseUrl/v1/temperature/station", "code_departement" to departmentCode, "size" to 100),
         ).map { TemperatureStation(it.code, it.name ?: it.code, it.river, point(it.latitude, it.longitude)) }
 
-    override suspend fun latestTemperature(stationCode: String): TemperatureReading? =
+    /** Readings are hourly, so this is about the last two weeks the station reported. */
+    override suspend fun recentTemperatures(stationCode: String): List<TemperatureReading> =
         page(
             TemperatureDto.serializer(),
-            buildUrl("$baseUrl/v1/temperature/chronique", "code_station" to stationCode, "size" to 1, "sort" to "desc"),
-        ).firstOrNull()?.let { dto ->
-            val date = dto.date?.let { runCatching { LocalDate.parse(it) }.getOrNull() } ?: return null
+            buildUrl("$baseUrl/v1/temperature/chronique", "code_station" to stationCode, "size" to TEMPERATURE_READINGS, "sort" to "desc"),
+        ).mapNotNull { dto ->
+            val date = dto.date?.let { runCatching { LocalDate.parse(it) }.getOrNull() } ?: return@mapNotNull null
             val time = dto.time?.let { runCatching { LocalTime.parse(it) }.getOrNull() } ?: LocalTime.MIDNIGHT
-            TemperatureReading(dto.resultat ?: return null, LocalDateTime.of(date, time))
+            TemperatureReading(dto.resultat ?: return@mapNotNull null, LocalDateTime.of(date, time))
         }
 
     /** Stations in the commune first; the department's otherwise. Many legacy points have no location. */
@@ -127,4 +128,8 @@ class HubEauStationRepository(
         if (latitude != null && longitude != null) GeoPoint(latitude, longitude) else null
 
     private fun instant(text: String): Instant? = runCatching { Instant.parse(text) }.getOrNull()
+
+    private companion object {
+        const val TEMPERATURE_READINGS = 14 * 24
+    }
 }

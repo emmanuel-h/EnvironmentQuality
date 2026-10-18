@@ -1,5 +1,6 @@
 package fr.mandarine.environmentquality.ui.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,15 +30,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.mandarine.environmentquality.R
+import fr.mandarine.environmentquality.domain.model.DailyTemperature
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.presentation.LiveRiver
@@ -214,6 +221,10 @@ private fun TemperatureCard(temperature: RiverTemperature) {
                 stringResource(R.string.unit_celsius, Format.fixed(reading.celsius, 1)),
                 stringResource(R.string.nearby_measured_on, Format.longDate(reading.measuredAt.toLocalDate())),
             )
+            if (temperature.days.size >= 2) {
+                Spacer(Modifier.height(12.dp))
+                TemperatureDays(temperature.days)
+            }
             val age = Duration.between(reading.measuredAt, LocalDateTime.now(ZoneId.of("Europe/Paris"))).toDays()
             if (age > STALE_DAYS) {
                 Spacer(Modifier.height(10.dp))
@@ -236,6 +247,49 @@ private fun TemperatureCard(temperature: RiverTemperature) {
             }
         }
     }
+}
+
+/** One bar per day, spanning that day's coolest to warmest reading. */
+@Composable
+private fun TemperatureDays(days: List<DailyTemperature>) {
+    val low = days.minOf { it.minCelsius }
+    val high = days.maxOf { it.maxCelsius }
+    // A margin around the range so a flat day is still a visible bar.
+    val bottom = low - 0.5
+    val span = high + 0.5 - bottom
+    val description = days.joinToString { day ->
+        Format.mediumDate(day.date) + " " + Format.fixed(day.minCelsius, 1) + "–" + Format.fixed(day.maxCelsius, 1) + " °C"
+    }
+    Canvas(
+        Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .semantics { contentDescription = description },
+    ) {
+        val gap = 4.dp.toPx()
+        val barWidth = ((size.width - gap * (days.size - 1)) / days.size).coerceAtLeast(2f)
+        val minHeight = 3.dp.toPx()
+        days.forEachIndexed { index, day ->
+            val top = (size.height * (1 - (day.maxCelsius - bottom) / span)).toFloat()
+            val base = (size.height * (1 - (day.minCelsius - bottom) / span)).toFloat()
+            val h = (base - top).coerceAtLeast(minHeight)
+            drawRoundRect(
+                if (index == days.size - 1) Palette.Water else Palette.River,
+                topLeft = Offset(index * (barWidth + gap), base - h),
+                size = Size(barWidth, h),
+                cornerRadius = CornerRadius(3.dp.toPx()),
+            )
+        }
+    }
+    Spacer(Modifier.height(4.dp))
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(Format.mediumDate(days.first().date), fontSize = 11.sp, color = Palette.InkSecondary)
+        Text(Format.mediumDate(days.last().date), fontSize = 11.sp, color = Palette.InkSecondary)
+    }
+    Text(
+        stringResource(R.string.nearby_temperature_range, days.size, Format.fixed(low, 1), Format.fixed(high, 1)),
+        style = MaterialTheme.typography.bodySmall,
+    )
 }
 
 @Composable
