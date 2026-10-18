@@ -2,6 +2,8 @@ package fr.mandarine.environmentquality.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class NavigatorTest {
@@ -32,5 +34,21 @@ class NavigatorTest {
 
         assertEquals(listOf<NavKey>(SearchKey), stack)
         assertEquals(SearchKey, navigator.currentTab)
+    }
+
+    @Test
+    fun `should ask the search field for focus once when a search is started`() {
+        navigator.startSearch()
+
+        assertEquals(listOf<NavKey>(SearchKey), stack)
+        assertTrue(navigator.consumeSearchFocus())
+        assertFalse(navigator.consumeSearchFocus())
+    }
+
+    @Test
+    fun `should not ask for focus when the search tab is selected from the bottom bar`() {
+        navigator.selectTab(SearchKey)
+
+        assertFalse(navigator.consumeSearchFocus())
     }
 }

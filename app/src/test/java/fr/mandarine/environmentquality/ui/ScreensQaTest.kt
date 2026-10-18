@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -90,6 +92,16 @@ class ScreensQaTest {
     fun `should show the search field when the search tab opens`() {
         show("search") { SearchScreen(navigator) }
         waitFor("Commune ou code postal")
+    }
+
+    @Test
+    fun `should focus the search field when the map search bar is tapped once`() {
+        composeRule.setContent { EnvironmentQualityTheme { EnvironmentQualityRoot() } }
+        waitFor("Eau potable")
+
+        composeRule.onNodeWithText("Commune ou code postal").performClick()
+
+        composeRule.onNode(hasSetTextAction()).assertIsFocused()
     }
 
     @Test

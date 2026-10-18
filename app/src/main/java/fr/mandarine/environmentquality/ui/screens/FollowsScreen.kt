@@ -54,7 +54,6 @@ import fr.mandarine.environmentquality.ui.components.rememberNotificationPermiss
 import fr.mandarine.environmentquality.ui.navigation.CommuneKey
 import fr.mandarine.environmentquality.ui.navigation.CompareKey
 import fr.mandarine.environmentquality.ui.navigation.Navigator
-import fr.mandarine.environmentquality.ui.navigation.SearchKey
 import fr.mandarine.environmentquality.ui.theme.Palette
 
 @Composable
@@ -80,7 +79,7 @@ fun FollowsScreen(navigator: Navigator) {
             FollowedList(
                 followed,
                 onOpen = { navigator.open(CommuneKey(it.commune.code)) },
-                onAdd = { navigator.selectTab(SearchKey) },
+                onAdd = { navigator.startSearch() },
             )
             AlertsSection(state.alerts) { alerts ->
                 if (alerts.nonConform || alerts.newSample || alerts.referenceExceeded) requestPermission()
