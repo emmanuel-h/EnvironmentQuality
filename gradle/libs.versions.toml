@@ -18,7 +18,7 @@ composeBom = "2026.09.00"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
 desugarJdkLibs = "2.1.5"
-kotlinxSerialization = "1.9.0"
+kotlinxSerialization = "1.11.0"
 work = "2.10.2"
 
 [libraries]
