@@ -88,6 +88,8 @@ Only official or governmental sources are used. Each source below was tested on 
 
 Géorisques responses are paginated (`page`, `page_size`, `total_pages`, `next`). VigiEau returns a bare array.
 
+Hub'Eau hydrometry values come raw: height `H` in mm, flow `Q` in l/s. River temperature can be stale (the latest value in Eure on 2026-10-18 was from 2024-08-11), so always show the measurement date and flag old data.
+
 #### Managed later — official, but needs a free account
 
 | Topic | Source (publisher) | Access | Notes |
