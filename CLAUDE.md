@@ -40,7 +40,8 @@ app/src/main/java/fr/mandarine/environmentquality/
 ```
 
 **The app is entirely Compose.** There is no `res/layout/`, no `appcompat` and no Views
-`material`. `res/values/` holds the window themes, `colors.xml` and `strings.xml`.
+`material`. `res/values/` holds the window themes, `colors.xml` and `strings.xml` (French, the default).
+`res/values-en/strings.xml` is the English translation: every new string goes in both files.
 
 Test sources mirror the main layout under `app/src/test/java/fr/mandarine/environmentquality/`.
 

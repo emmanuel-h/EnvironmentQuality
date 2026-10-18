@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -25,15 +27,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.mandarine.environmentquality.R
+import fr.mandarine.environmentquality.data.device.AppLanguage
 import fr.mandarine.environmentquality.domain.model.WaterStatus
 import fr.mandarine.environmentquality.presentation.SourcesViewModel
 import fr.mandarine.environmentquality.ui.appContainer
@@ -139,7 +146,50 @@ fun SourcesScreen(navigator: Navigator) {
                 }
             }
 
+            LanguageRow()
+
             Text(stringResource(R.string.sources_disclaimer), style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp))
+        }
+    }
+}
+
+@Composable
+private fun LanguageRow() {
+    val activity = LocalActivity.current
+    val context = LocalContext.current
+    val current = AppLanguage.current(context)
+    AppCard(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.sources_language), style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+            Row(
+                Modifier
+                    .width(140.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Palette.Field)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                // Each language is named in itself, as language pickers usually are.
+                listOf(AppLanguage.FRENCH to "Français", AppLanguage.ENGLISH to "English").forEach { (tag, name) ->
+                    val selected = tag == current
+                    Text(
+                        tag.uppercase(),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = if (selected) Palette.Ink else Palette.InkSecondary,
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(9.dp))
+                            .background(if (selected) Palette.Surface else Color.Transparent)
+                            .selectable(selected = selected, role = Role.RadioButton) {
+                                if (!selected && activity != null) AppLanguage.set(activity, tag)
+                            }
+                            .semantics { contentDescription = name }
+                            .padding(vertical = 8.dp),
+                    )
+                }
+            }
         }
     }
 }
