@@ -1,0 +1,45 @@
+{
+  "totalElements": 1,
+  "totalPages": 1,
+  "pageNumber": 0,
+  "pageSize": 10,
+  "content": [
+    {
+      "idGaspar": "27DDTM20120001",
+      "libPpr": "PPRN-I - Seine dans l'Eure",
+      "modeleProcedure": "PPRN-I",
+      "libBassinRisques": "SEINE",
+      "etatRevision": false,
+      "supExists": true,
+      "zonageReglementaire": {
+        "zoneRegExists": true,
+        "listTypeReg": [
+          {
+            "code": "01",
+            "libelle": "Prescriptions hors zone d'aléa",
+            "nom": "Zone jaune",
+            "codeZone": "jaune"
+          },
+          {
+            "code": "02",
+            "libelle": "Prescriptions",
+            "nom": "Zone bleu",
+            "codeZone": "bleu"
+          },
+          {
+            "code": "03",
+            "libelle": "Interdiction",
+            "nom": "Zone rouge",
+            "codeZone": "rouge"
+          }
+        ]
+      },
+      "departementPilote": {
+        "codeDepartementPilote": "27",
+        "libelleDepartementPilote": "EURE"
+      },
+      "dateModification": "03/02/2026",
+      "listePprRevises": []
+    }
+  ]
+}

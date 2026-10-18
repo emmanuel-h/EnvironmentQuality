@@ -165,6 +165,39 @@
     <string name="risks_inspection_report">Lire le rapport d\'inspection</string>
     <string name="seveso_high">Seveso seuil haut</string>
     <string name="seveso_low">Seveso seuil bas</string>
+    <string name="risks_clay">Argiles</string>
+    <string name="risks_clay_none">Non exposé</string>
+    <string name="risks_clay_low">Exposition faible</string>
+    <string name="risks_clay_medium">Exposition moyenne</string>
+    <string name="risks_clay_high">Exposition forte</string>
+    <string name="risks_clay_scale">Retrait-gonflement des sols, au centre de la commune</string>
+    <string name="risks_plans">Plans de prévention</string>
+    <string name="risks_plans_note">Un plan de prévention fixe où et comment construire ; il est annexé au plan local d\'urbanisme.</string>
+    <string name="risks_plan_natural">Risques naturels</string>
+    <string name="risks_plan_technological">Risques technologiques</string>
+    <string name="risks_plan_mining">Risques miniers</string>
+    <string name="risks_updated">mis à jour le %1$s</string>
+    <string name="risks_flood_areas">Zones inondables</string>
+    <string name="risks_flood_territory">Territoire à risque important d\'inondation</string>
+    <string name="risks_flood_atlas">Atlas des zones inondables</string>
+    <string name="risks_soils">Sols pollués</string>
+    <string name="risks_soils_none">Aucun secteur d\'information sur les sols dans la commune.</string>
+    <string name="risks_soil_sheet">Lire la fiche</string>
+    <plurals name="risks_soil_sectors">
+        <item quantity="one">%1$d secteur d\'information sur les sols</item>
+        <item quantity="many">%1$d secteurs d\'information sur les sols</item>
+        <item quantity="other">%1$d secteurs d\'information sur les sols</item>
+    </plurals>
+    <plurals name="risks_soil_actions">
+        <item quantity="one">%1$d site pollué suivi par l\'administration, dont %2$d en cours</item>
+        <item quantity="many">%1$d sites pollués suivis par l\'administration, dont %2$d en cours</item>
+        <item quantity="other">%1$d sites pollués suivis par l\'administration, dont %2$d en cours</item>
+    </plurals>
+    <plurals name="risks_former_activities">
+        <item quantity="one">%1$d ancienne activité industrielle ou de service recensée</item>
+        <item quantity="many">%1$d anciennes activités industrielles ou de service recensées</item>
+        <item quantity="other">%1$d anciennes activités industrielles ou de service recensées</item>
+    </plurals>
     <string name="risks_source">Source : Géorisques, ministère de la Transition écologique.</string>
     <string name="show_all">Voir les %1$d</string>
     <string name="show_less">Réduire</string>

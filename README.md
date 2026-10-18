@@ -20,8 +20,10 @@ the switch in the Sources tab.
   conductivity, turbidity, pH and E. coli.
 - **Drought**: the VigiEau restriction level for each water resource, the prefectoral
   order, and what is restricted for individuals, local authorities, farms and businesses.
-- **Risks**: seismic zone, radon category, the Géorisques risk families, recognised
-  natural disasters and classified industrial sites with their Seveso level.
+- **Risks**: seismic zone, radon category, clay shrink-swell exposure, the Géorisques
+  risk families, recognised natural disasters, risk prevention plans, flood areas,
+  classified industrial sites with their Seveso level, and polluted soils (soil
+  information sectors, sites handled by the authorities, former industrial activities).
 - **Nearby**: the closest live river height and flow, water temperature, flow
   observation stations with their latest flow class (flowing, low, dry…), and the
   nearest groundwater monitoring point with its last sampling: nitrates, total

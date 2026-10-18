@@ -4,10 +4,12 @@ import fr.mandarine.environmentquality.domain.model.CommuneRisks
 import fr.mandarine.environmentquality.domain.model.DroughtStatus
 import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowStation
+import fr.mandarine.environmentquality.domain.model.GeoPoint
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.RiskDetails
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
 import java.time.LocalDate
@@ -18,6 +20,9 @@ interface DroughtRepository {
 
 interface RiskRepository {
     suspend fun risks(communeCode: String): CommuneRisks
+
+    /** Clay exposure needs a point; without [centre] it is left unknown. */
+    suspend fun riskDetails(communeCode: String, centre: GeoPoint?): RiskDetails
 }
 
 interface StationRepository {

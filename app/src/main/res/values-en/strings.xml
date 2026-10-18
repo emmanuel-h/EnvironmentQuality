@@ -160,6 +160,36 @@
     <string name="risks_inspection_report">Read the inspection report</string>
     <string name="seveso_high">Seveso upper tier</string>
     <string name="seveso_low">Seveso lower tier</string>
+    <string name="risks_clay">Clay soils</string>
+    <string name="risks_clay_none">Not exposed</string>
+    <string name="risks_clay_low">Low exposure</string>
+    <string name="risks_clay_medium">Medium exposure</string>
+    <string name="risks_clay_high">High exposure</string>
+    <string name="risks_clay_scale">Shrinking and swelling of the ground, at the town centre</string>
+    <string name="risks_plans">Prevention plans</string>
+    <string name="risks_plans_note">A prevention plan sets where and how one may build; it is annexed to the local zoning plan.</string>
+    <string name="risks_plan_natural">Natural risks</string>
+    <string name="risks_plan_technological">Technological risks</string>
+    <string name="risks_plan_mining">Mining risks</string>
+    <string name="risks_updated">updated on %1$s</string>
+    <string name="risks_flood_areas">Flood areas</string>
+    <string name="risks_flood_territory">Area of significant flood risk</string>
+    <string name="risks_flood_atlas">Flood zone atlas</string>
+    <string name="risks_soils">Polluted soils</string>
+    <string name="risks_soils_none">No soil information sector in the municipality.</string>
+    <string name="risks_soil_sheet">Read the record</string>
+    <plurals name="risks_soil_sectors">
+        <item quantity="one">%1$d soil information sector</item>
+        <item quantity="other">%1$d soil information sectors</item>
+    </plurals>
+    <plurals name="risks_soil_actions">
+        <item quantity="one">%1$d polluted site handled by the authorities, %2$d still open</item>
+        <item quantity="other">%1$d polluted sites handled by the authorities, %2$d still open</item>
+    </plurals>
+    <plurals name="risks_former_activities">
+        <item quantity="one">%1$d former industrial or service activity on record</item>
+        <item quantity="other">%1$d former industrial or service activities on record</item>
+    </plurals>
     <string name="risks_source">Source: Géorisques, French Ministry for the Ecological Transition.</string>
     <string name="show_all">See all %1$d</string>
     <string name="show_less">Show less</string>

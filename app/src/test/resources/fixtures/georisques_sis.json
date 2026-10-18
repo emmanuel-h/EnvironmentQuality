@@ -1,0 +1,89 @@
+{
+  "results": 6,
+  "page": 1,
+  "total_pages": 1,
+  "data": [
+    {
+      "identifiant_ssp": "SSP00045740101",
+      "id_sis": "27SIS06894",
+      "nom": "Ralston Energy Systems",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00045740101",
+      "date_maj": "2026-08-03",
+      "superficie": 17097.166
+    },
+    {
+      "identifiant_ssp": "SSP00064710101",
+      "id_sis": "27SIS11082",
+      "nom": "ENGIE",
+      "adresse": "68 Avenue de Rouen",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00064710101",
+      "date_maj": "2025-01-28",
+      "superficie": 8011.3516
+    },
+    {
+      "identifiant_ssp": "SSP00064730101",
+      "id_sis": "27SIS11084",
+      "nom": "FONDERIE VERNON",
+      "adresse": "108, Avenue de Rouen",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00064730101",
+      "date_maj": "2026-08-03",
+      "superficie": 31671.092
+    },
+    {
+      "identifiant_ssp": "SSP00066040101",
+      "id_sis": "27SIS11221",
+      "nom": "Ancienne décharge de Vernon",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00066040101",
+      "date_maj": "2025-01-28",
+      "superficie": 48471.3
+    },
+    {
+      "identifiant_ssp": "SSP00066050101",
+      "id_sis": "27SIS11222",
+      "nom": "SMURFIT KAPPA PAPIER RECYCLE France",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00066050101",
+      "date_maj": "2026-08-03",
+      "superficie": 26980.863
+    },
+    {
+      "identifiant_ssp": "SSP00070840101",
+      "id_sis": "27SIS11723",
+      "nom": "Caserne Fieschi",
+      "adresse": "AVENUE FOCH",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut_classification": "Secteurs d'information sur les sols (SIS)",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/classification/SSP00070840101",
+      "date_maj": "2026-08-03",
+      "superficie": 151618.12
+    }
+  ],
+  "response_code": 200,
+  "message": null,
+  "next": null,
+  "previous": null
+}

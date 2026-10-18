@@ -1,0 +1,99 @@
+{
+  "results": 8,
+  "page": 1,
+  "total_pages": 1,
+  "data": [
+    {
+      "identifiant_ssp": "SSP000457401",
+      "nom_etablissement": "Ralston Energy Systems",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000457401",
+      "date_maj": "2026-08-03"
+    },
+    {
+      "identifiant_ssp": "SSP000647101",
+      "nom_etablissement": "ENGIE",
+      "adresse": "68 Avenue de Rouen",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "En cours",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000647101",
+      "date_maj": "2018-07-06"
+    },
+    {
+      "identifiant_ssp": "SSP000647301",
+      "nom_etablissement": "FONDERIE VERNON",
+      "adresse": "108, Avenue de Rouen",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000647301",
+      "date_maj": "2026-08-03"
+    },
+    {
+      "identifiant_ssp": "SSP000660401",
+      "nom_etablissement": "Ancienne décharge de Vernon",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000660401",
+      "date_maj": "2026-08-03"
+    },
+    {
+      "identifiant_ssp": "SSP000660501",
+      "nom_etablissement": "SMURFIT KAPPA PAPIER RECYCLE France",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000660501",
+      "date_maj": "2026-08-03"
+    },
+    {
+      "identifiant_ssp": "SSP000708401",
+      "nom_etablissement": "Caserne Fieschi",
+      "adresse": "AVENUE FOCH",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP000708401",
+      "date_maj": "2026-08-03"
+    },
+    {
+      "identifiant_ssp": "SSP50896501",
+      "nom_etablissement": "TOTAL Raffinage Marketing",
+      "adresse": "24, avenue de Rouen",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP50896501",
+      "date_maj": "2026-03-11"
+    },
+    {
+      "identifiant_ssp": "SSP50957801",
+      "nom_etablissement": "ASSISTANCE VERNONAISE",
+      "adresse": "16 rue Pierre Bonnard",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "Clôturée",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/infosols/instruction/SSP50957801",
+      "date_maj": "2026-03-16"
+    }
+  ],
+  "response_code": 200,
+  "message": null,
+  "next": null,
+  "previous": null
+}

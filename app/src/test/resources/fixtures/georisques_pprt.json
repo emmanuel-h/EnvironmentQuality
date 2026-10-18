@@ -1,0 +1,45 @@
+{
+  "totalElements": 1,
+  "totalPages": 1,
+  "pageNumber": 0,
+  "pageSize": 10,
+  "content": [
+    {
+      "idGaspar": "76DREAL20090004",
+      "libPpr": "PPRT SNECMA Vernon",
+      "modeleProcedure": "PPRT",
+      "libBassinRisques": "PPRT SNECMA Vernon",
+      "etatRevision": false,
+      "supExists": true,
+      "zonageReglementaire": {
+        "zoneRegExists": true,
+        "listTypeReg": [
+          {
+            "code": "02",
+            "libelle": "Prescriptions",
+            "nom": "zone d'autorisation sous conditions, esp bleue b1,",
+            "codeZone": "zone b1"
+          },
+          {
+            "code": "03",
+            "libelle": "Interdiction",
+            "nom": "zone d'interdiction, espace boisé dense rouge r3,",
+            "codeZone": "zone r3"
+          },
+          {
+            "code": "04",
+            "libelle": "Interdiction stricte",
+            "nom": "zone d'interdiction rouge r1,",
+            "codeZone": "zone r1"
+          }
+        ]
+      },
+      "departementPilote": {
+        "codeDepartementPilote": "27",
+        "libelleDepartementPilote": "EURE"
+      },
+      "dateModification": "04/04/2025",
+      "listePprRevises": []
+    }
+  ]
+}
