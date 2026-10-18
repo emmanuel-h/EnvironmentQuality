@@ -50,7 +50,6 @@ import fr.mandarine.environmentquality.ui.components.StatusMark
 import fr.mandarine.environmentquality.ui.navigation.CommuneKey
 import fr.mandarine.environmentquality.ui.navigation.NearbyKey
 import fr.mandarine.environmentquality.ui.navigation.Navigator
-import fr.mandarine.environmentquality.ui.navigation.SearchKey
 import fr.mandarine.environmentquality.ui.navigation.SourcesKey
 import fr.mandarine.environmentquality.ui.theme.Palette
 
@@ -69,7 +68,7 @@ fun MapScreen(navigator: Navigator) {
         onToggleFollow = viewModel::toggleFollow,
         onOpenCommune = { navigator.open(CommuneKey(it)) },
         onOpenNearby = { navigator.open(NearbyKey(it)) },
-        onSearch = { navigator.selectTab(SearchKey) },
+        onSearch = { navigator.startSearch() },
         onSources = { navigator.selectTab(SourcesKey) },
     )
 }

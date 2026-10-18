@@ -20,4 +20,15 @@ class Navigator(private val backStack: MutableList<NavKey>) {
         backStack.add(root)
         repeat(backStack.size - 1) { backStack.removeAt(0) }
     }
+
+    private var focusSearch = false
+
+    /** Opens the search tab ready to type, for the buttons that ask for a commune. */
+    fun startSearch() {
+        focusSearch = true
+        selectTab(SearchKey)
+    }
+
+    /** True once after [startSearch], so the search field takes focus only when asked to. */
+    fun consumeSearchFocus(): Boolean = focusSearch.also { focusSearch = false }
 }

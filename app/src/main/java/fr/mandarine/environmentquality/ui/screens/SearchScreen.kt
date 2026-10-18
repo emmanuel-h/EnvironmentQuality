@@ -35,11 +35,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -79,6 +83,7 @@ fun SearchScreen(navigator: Navigator) {
     }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val focusField = remember { navigator.consumeSearchFocus() }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) viewModel.locate() else viewModel.locationDenied()
     }
@@ -96,6 +101,7 @@ fun SearchScreen(navigator: Navigator) {
             if (granted) viewModel.locate() else permission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
         },
         onOpen = { navigator.open(CommuneKey(it.code)) },
+        focusField = focusField,
     )
 }
 
@@ -106,7 +112,16 @@ internal fun SearchContent(
     onQuery: (String) -> Unit,
     onLocate: () -> Unit,
     onOpen: (Commune) -> Unit,
+    focusField: Boolean = false,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboard = LocalSoftwareKeyboardController.current
+    LaunchedEffect(focusField) {
+        if (focusField) {
+            focusRequester.requestFocus()
+            keyboard?.show()
+        }
+    }
     Column(Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -124,7 +139,10 @@ internal fun SearchContent(
                 textStyle = TextStyle(fontFamily = PublicSans, fontSize = 16.sp, color = Palette.Ink),
                 cursorBrush = SolidColor(Palette.Water),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                modifier = Modifier.fillMaxWidth().semantics { contentDescription = hint },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .semantics { contentDescription = hint },
                 decorationBox = { innerField ->
                     Row(
                         Modifier
