@@ -5,9 +5,7 @@ plugins {
 android {
     namespace = "fr.mandarine.environmentquality"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version = release(37)
     }
 
     defaultConfig {
