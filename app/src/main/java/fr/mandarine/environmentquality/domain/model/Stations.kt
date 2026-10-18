@@ -1,0 +1,50 @@
+package fr.mandarine.environmentquality.domain.model
+
+import java.time.Instant
+import java.time.LocalDateTime
+
+data class HydroStation(
+    val code: String,
+    val name: String,
+    val river: String?,
+    val location: GeoPoint?,
+    val inService: Boolean,
+    val comment: String?,
+)
+
+/** Hub'Eau sends height in mm and flow in l/s; these are already converted. */
+data class HydroReading(
+    val heightMetres: Double?,
+    val heightAt: Instant?,
+    val flowCubicMetres: Double?,
+    val flowAt: Instant?,
+    val previousFlowCubicMetres: Double?,
+    val heightChangeMillimetres: Double?,
+)
+
+data class TemperatureStation(
+    val code: String,
+    val name: String,
+    val river: String?,
+    val location: GeoPoint?,
+)
+
+data class TemperatureReading(val celsius: Double, val measuredAt: LocalDateTime)
+
+data class GroundwaterStation(
+    val code: String,
+    val commune: String?,
+    val nature: String?,
+    val waterBody: String?,
+    val altitude: Double?,
+    val location: GeoPoint?,
+)
+
+data class FlowStation(
+    val code: String,
+    val name: String,
+    val river: String?,
+    val commune: String?,
+    val active: Boolean,
+    val location: GeoPoint?,
+)
