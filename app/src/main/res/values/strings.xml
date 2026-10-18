@@ -15,4 +15,43 @@
     <string name="status_reserves">Réserves</string>
     <string name="status_non_conform">Non conforme</string>
     <string name="status_unknown">Non analysé</string>
+    <string name="loading">Chargement…</string>
+    <string name="population">%1$s hab.</string>
+    <string name="action_clear">Effacer</string>
+    <string name="action_follow">Suivre cette commune</string>
+    <string name="action_unfollow">Ne plus suivre cette commune</string>
+
+    <string name="search_hint">Commune ou code postal</string>
+    <string name="search_use_location">Utiliser ma position</string>
+    <string name="search_locating">Recherche de votre position…</string>
+    <string name="search_location_failed">Position indisponible. Autorisez la localisation ou tapez le nom de votre commune.</string>
+    <string name="search_type_prompt">Tapez un nom ou un code postal</string>
+    <plurals name="search_result_count">
+        <item quantity="one">%d commune</item>
+        <item quantity="many">%d communes</item>
+        <item quantity="other">%d communes</item>
+    </plurals>
+    <string name="search_no_result">Aucune commune ne correspond. Essayez un code postal à 5 chiffres.</string>
+    <string name="search_recent">Récemment consultées</string>
+    <string name="search_footer">Recherche par nom ou code postal via l\'API Découpage administratif. Les résultats affichent le département et la population pour lever les homonymes.</string>
+
+    <string name="map_description">Carte de France des communes et de la conformité de leur eau</string>
+    <string name="map_sources">Sources et informations</string>
+    <string name="map_sampled_on">prélevé le %1$s</string>
+    <string name="map_open_commune">Voir la fiche</string>
+    <string name="map_pick_title">Choisissez une commune</string>
+    <string name="map_pick_body">Touchez un repère sur la carte ou cherchez votre commune pour voir la qualité de son eau.</string>
+    <string name="map_pick_action">Rechercher une commune</string>
+    <string name="map_no_station">Aucune station suivie dans ce département.</string>
+    <string name="map_open_nearby">Stations autour de %1$s</string>
+    <string name="layer_water">Eau potable</string>
+    <string name="layer_rivers">Rivières</string>
+    <string name="layer_groundwater">Nappes</string>
+    <string name="layer_flows">Débits</string>
+    <string name="layer_rivers_title">Rivières en direct</string>
+    <string name="layer_rivers_body">%1$d stations de hauteur et débit · %2$s</string>
+    <string name="layer_groundwater_title">Qualité des nappes</string>
+    <string name="layer_groundwater_body">%1$d points d\'eau souterraine suivis · %2$s</string>
+    <string name="layer_flows_title">Écoulement des cours d\'eau</string>
+    <string name="layer_flows_body">%1$d stations d\'observation · %2$s</string>
 </resources>
