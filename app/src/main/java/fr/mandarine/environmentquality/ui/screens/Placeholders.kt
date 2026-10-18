@@ -23,12 +23,6 @@ private fun Placeholder(title: String, navigator: Navigator, back: Boolean) {
 
 @Composable fun SourcesScreen(navigator: Navigator) = Placeholder(stringResource(R.string.tab_sources), navigator, back = false)
 
-@Composable fun CommuneScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
-
-@Composable fun ParametersScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
-
-@Composable fun HistoryScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
-
 @Composable fun NearbyScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
 
 @Composable fun CompareScreen(code: String, navigator: Navigator) = Placeholder(code, navigator, back = true)
