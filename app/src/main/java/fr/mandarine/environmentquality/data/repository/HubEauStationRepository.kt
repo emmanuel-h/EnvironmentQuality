@@ -8,6 +8,9 @@ import fr.mandarine.environmentquality.data.remote.HttpClient
 import fr.mandarine.environmentquality.data.remote.HubEauPage
 import fr.mandarine.environmentquality.data.remote.HydroObservationDto
 import fr.mandarine.environmentquality.data.remote.HydroStationDto
+import fr.mandarine.environmentquality.data.remote.PiezometerReadingDto
+import fr.mandarine.environmentquality.data.remote.PiezometerStationDto
+import fr.mandarine.environmentquality.data.remote.RiverAnalysisDto
 import fr.mandarine.environmentquality.data.remote.TemperatureDto
 import fr.mandarine.environmentquality.data.remote.TemperatureStationDto
 import fr.mandarine.environmentquality.data.remote.apiJson
@@ -16,24 +19,31 @@ import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowState
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterLevel
 import fr.mandarine.environmentquality.domain.model.GroundwaterResult
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.PiezometerStation
+import fr.mandarine.environmentquality.domain.model.RiverQuality
+import fr.mandarine.environmentquality.domain.model.RiverResult
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
+import fr.mandarine.environmentquality.domain.model.distanceKm
 import kotlinx.serialization.KSerializer
 import fr.mandarine.environmentquality.domain.repository.StationRepository
+import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-/** Hub'Eau hydrometry, river temperature, groundwater quality and flow observation. */
+/** Hub'Eau hydrometry, river temperature and quality, groundwater quality and level, and flow observation. */
 class HubEauStationRepository(
     private val http: HttpClient,
     private val baseUrl: String = "https://hubeau.eaufrance.fr/api",
+    private val clock: Clock = Clock.systemUTC(),
 ) : StationRepository {
 
     override suspend fun hydroStations(departmentCode: String): List<HydroStation> =
@@ -179,6 +189,82 @@ class HubEauStationRepository(
             .mapValues { (_, observations) -> observations.maxBy { it.observedOn } }
     }
 
+    override suspend fun piezometers(departmentCode: String): List<PiezometerStation> =
+        page(
+            PiezometerStationDto.serializer(),
+            buildUrl(
+                "$baseUrl/v1/niveaux_nappes/stations",
+                "code_departement" to departmentCode,
+                "size" to 200,
+                "fields" to "code_bss,nom_commune,libelle_pe,noms_masse_eau_edl,x,y,date_fin_mesure",
+            ),
+        ).map { dto ->
+            PiezometerStation(
+                code = dto.code,
+                // Labels are often a bare well number, "PZ3": the commune says more.
+                name = dto.commune ?: dto.label?.trim()?.ifEmpty { null } ?: dto.code,
+                aquifer = dto.waterBodies.joinToString(", ").ifEmpty { null },
+                location = point(dto.y, dto.x),
+                lastMeasuredOn = dto.lastMeasuredOn?.let(::date),
+            )
+        }
+
+    override suspend fun recentLevels(stationCode: String): List<GroundwaterLevel> =
+        page(
+            PiezometerReadingDto.serializer(),
+            buildUrl(
+                "$baseUrl/v1/niveaux_nappes/chroniques",
+                "code_bss" to stationCode,
+                "sort" to "desc",
+                "size" to LEVEL_DAYS,
+                "fields" to "date_mesure,niveau_nappe_eau,profondeur_nappe",
+            ),
+        ).mapNotNull { dto ->
+            val day = dto.date?.let(::date) ?: return@mapNotNull null
+            GroundwaterLevel(day, dto.level ?: return@mapNotNull null, dto.depth)
+        }
+
+    /** One call for every station within [RIVER_RADIUS_KM]: the rows carry each station's position. */
+    override suspend fun riverQuality(centre: GeoPoint): RiverQuality? {
+        val rows = page(
+            RiverAnalysisDto.serializer(),
+            buildUrl(
+                "$baseUrl/v2/qualite_rivieres/analyse_pc",
+                "longitude" to centre.longitude,
+                "latitude" to centre.latitude,
+                "distance" to RIVER_RADIUS_KM,
+                "code_parametre" to RiverQuality.PARAMETERS.joinToString(","),
+                "date_debut_prelevement" to LocalDate.now(clock).minusYears(1),
+                "sort" to "desc",
+                "size" to RIVER_RESULTS,
+                "fields" to "code_station,libelle_station,longitude,latitude,date_prelevement,code_parametre,libelle_parametre,resultat,symbole_unite",
+            ),
+        )
+        return toRiverQuality(rows, centre)
+    }
+
+    internal fun toRiverQuality(rows: List<RiverAnalysisDto>, centre: GeoPoint): RiverQuality? {
+        val nearest = rows
+            .groupBy { it.stationCode }
+            .minByOrNull { (_, station) -> point(station.first().latitude, station.first().longitude)?.distanceKm(centre) ?: Double.MAX_VALUE }
+            ?.value ?: return null
+        val results = nearest
+            .mapNotNull { row ->
+                val code = row.code?.toIntOrNull() ?: return@mapNotNull null
+                RiverResult(
+                    code = code,
+                    name = row.name ?: code.toString(),
+                    value = row.resultat ?: return@mapNotNull null,
+                    unit = row.unit,
+                    sampledOn = row.sampledOn?.let(::date) ?: return@mapNotNull null,
+                )
+            }
+            .groupBy { it.code }
+            .map { (_, results) -> results.maxBy { it.sampledOn } }
+        val first = nearest.first()
+        return RiverQuality(first.stationCode, first.stationName ?: first.stationCode, point(first.latitude, first.longitude), results)
+    }
+
     private fun flowState(code: String?) = when (code) {
         "1a" -> FlowState.FLOWING
         "1f" -> FlowState.LOW
@@ -204,5 +290,8 @@ class HubEauStationRepository(
         const val GROUNDWATER_FIELDS = "date_debut_prelevement,code_param,nom_param,resultat,symbole_unite,code_remarque_analyse"
         /** Enough rows for each station's last few campaigns, in case one was skipped. */
         const val FLOW_CAMPAIGNS = 3
+        const val LEVEL_DAYS = 40
+        const val RIVER_RADIUS_KM = 20
+        const val RIVER_RESULTS = 1000
     }
 }

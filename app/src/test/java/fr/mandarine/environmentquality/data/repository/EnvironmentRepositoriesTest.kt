@@ -17,9 +17,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class EnvironmentRepositoriesTest {
 
@@ -257,5 +259,57 @@ class EnvironmentRepositoriesTest {
         val http = FakeHttpClient(detailRoutes.filterNot { it.first.startsWith("ssp/") })
 
         assertNull(GeorisquesRiskRepository(http).riskDetails("27681", vernon).soils)
+    }
+
+    @Test
+    fun `should read the commune, aquifer, position and last measurement when listing piezometers`() = runTest {
+        val http = FakeHttpClient(listOf("niveaux_nappes/stations" to "piezo_stations.json"))
+
+        val stations = HubEauStationRepository(http).piezometers("27")
+
+        val douains = stations.first { it.code == "01508X0100/P" }
+        assertEquals("Douains", douains.name)
+        assertEquals("Craie altérée du Neubourg-Iton-plaine de Saint-André", douains.aquifer)
+        assertEquals(GeoPoint(49.040770323, 1.430497927), douains.location)
+        assertEquals(LocalDate.of(2026, 10, 16), douains.lastMeasuredOn)
+        assertNull(stations.first { it.code == "01512X0036/S1" }.aquifer)
+    }
+
+    @Test
+    fun `should keep negative depths when the water rises above the ground`() = runTest {
+        val http = FakeHttpClient(listOf("niveaux_nappes/chroniques" to "piezo_chroniques.json"))
+
+        val levels = HubEauStationRepository(http).recentLevels("BSS003HEHE/X")
+
+        assertEquals(40, levels.size)
+        assertEquals(LocalDate.of(2026, 10, 15), levels.first().measuredOn)
+        assertEquals(18.09, levels.first().levelMetres, 1e-9)
+        assertEquals(-1.48, levels.first().depthMetres!!, 1e-9)
+        assertTrue("code_bss=BSS003HEHE%2FX" in http.requests.single())
+    }
+
+    @Test
+    fun `should keep the nearest station's latest result per parameter when reading river quality`() = runTest {
+        val http = FakeHttpClient(listOf("qualite_rivieres/analyse_pc" to "rivieres_analyses.json"))
+        val clock = Clock.fixed(Instant.parse("2026-10-18T12:00:00Z"), ZoneOffset.UTC)
+
+        val quality = HubEauStationRepository(http, clock = clock).riverQuality(vernon)!!
+
+        assertEquals("03172150", quality.stationCode)
+        assertEquals("RU DE BLARU A VERNON 1", quality.stationName)
+        assertEquals(4, quality.results.size)
+        assertEquals(LocalDate.of(2026, 6, 1), quality.sampledOn)
+        assertEquals(49.2, quality.result(1340)!!.value, 1e-9)
+        assertEquals(10.7, quality.result(1311)!!.value, 1e-9)
+        val url = http.requests.single()
+        assertTrue("date_debut_prelevement=2025-10-18" in url)
+        assertTrue("longitude=1.4827" in url && "latitude=49.0921" in url)
+    }
+
+    @Test
+    fun `should report no river quality when no station around was sampled in the last year`() = runTest {
+        val http = FakeHttpClient(listOf("qualite_rivieres/analyse_pc" to "hubeau_empty.json"))
+
+        assertNull(HubEauStationRepository(http).riverQuality(vernon))
     }
 }

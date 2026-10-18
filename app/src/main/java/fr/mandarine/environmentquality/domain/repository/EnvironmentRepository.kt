@@ -5,11 +5,14 @@ import fr.mandarine.environmentquality.domain.model.DroughtStatus
 import fr.mandarine.environmentquality.domain.model.FlowObservation
 import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.GroundwaterLevel
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.PiezometerStation
 import fr.mandarine.environmentquality.domain.model.RiskDetails
+import fr.mandarine.environmentquality.domain.model.RiverQuality
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
 import java.time.LocalDate
@@ -37,4 +40,9 @@ interface StationRepository {
     suspend fun flowStations(departmentCode: String): List<FlowStation>
     /** The latest observation of each station that has one, by station code. */
     suspend fun latestFlows(stationCodes: List<String>): Map<String, FlowObservation>
+    suspend fun piezometers(departmentCode: String): List<PiezometerStation>
+    /** About the last six weeks of daily levels, newest first. */
+    suspend fun recentLevels(stationCode: String): List<GroundwaterLevel>
+    /** The nearest station around [centre] sampled in the last year, with each parameter's latest result. */
+    suspend fun riverQuality(centre: GeoPoint): RiverQuality?
 }

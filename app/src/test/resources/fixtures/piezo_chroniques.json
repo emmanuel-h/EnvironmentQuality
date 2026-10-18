@@ -1,0 +1,210 @@
+{
+  "count": 40,
+  "first": "https://hubeau.eaufrance.fr/api/v1/niveaux_nappes/chroniques?code_bss=BSS003HEHE/X&sort=desc&fields=date_mesure,niveau_nappe_eau,profondeur_nappe&page=1&size=40",
+  "last": null,
+  "prev": null,
+  "next": null,
+  "api_version": "1.4.3",
+  "data": [
+    {
+      "date_mesure": "2026-10-15",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-10-14",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-13",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-12",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-11",
+      "niveau_nappe_eau": 18.11,
+      "profondeur_nappe": -1.5
+    },
+    {
+      "date_mesure": "2026-10-10",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-09",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-08",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-07",
+      "niveau_nappe_eau": 18.11,
+      "profondeur_nappe": -1.5
+    },
+    {
+      "date_mesure": "2026-10-06",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-10-05",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-10-04",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-10-03",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-10-02",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-10-01",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-30",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-29",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-28",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-27",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-26",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-25",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-24",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-23",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-22",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-21",
+      "niveau_nappe_eau": 18.07,
+      "profondeur_nappe": -1.46
+    },
+    {
+      "date_mesure": "2026-09-20",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-19",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-18",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-17",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-16",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-15",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-14",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-13",
+      "niveau_nappe_eau": 18.08,
+      "profondeur_nappe": -1.47
+    },
+    {
+      "date_mesure": "2026-09-12",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-11",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-10",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    },
+    {
+      "date_mesure": "2026-09-09",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-09-08",
+      "niveau_nappe_eau": 18.11,
+      "profondeur_nappe": -1.5
+    },
+    {
+      "date_mesure": "2026-09-07",
+      "niveau_nappe_eau": 18.1,
+      "profondeur_nappe": -1.49
+    },
+    {
+      "date_mesure": "2026-09-06",
+      "niveau_nappe_eau": 18.09,
+      "profondeur_nappe": -1.48
+    }
+  ]
+}

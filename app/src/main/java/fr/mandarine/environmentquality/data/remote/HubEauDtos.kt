@@ -116,3 +116,35 @@ internal data class FlowObservationDto(
     @SerialName("date_observation") val observedOn: String? = null,
     @SerialName("code_ecoulement") val code: String? = null,
 )
+
+@Serializable
+internal data class PiezometerStationDto(
+    @SerialName("code_bss") val code: String = "",
+    @SerialName("nom_commune") val commune: String? = null,
+    @SerialName("libelle_pe") val label: String? = null,
+    @SerialName("noms_masse_eau_edl") val waterBodies: List<String> = emptyList(),
+    /** Longitude and latitude, despite the names. */
+    val x: Double? = null,
+    val y: Double? = null,
+    @SerialName("date_fin_mesure") val lastMeasuredOn: String? = null,
+)
+
+@Serializable
+internal data class PiezometerReadingDto(
+    @SerialName("date_mesure") val date: String? = null,
+    @SerialName("niveau_nappe_eau") val level: Double? = null,
+    @SerialName("profondeur_nappe") val depth: Double? = null,
+)
+
+@Serializable
+internal data class RiverAnalysisDto(
+    @SerialName("code_station") val stationCode: String = "",
+    @SerialName("libelle_station") val stationName: String? = null,
+    val longitude: Double? = null,
+    val latitude: Double? = null,
+    @SerialName("date_prelevement") val sampledOn: String? = null,
+    @SerialName("code_parametre") val code: String? = null,
+    @SerialName("libelle_parametre") val name: String? = null,
+    val resultat: Double? = null,
+    @SerialName("symbole_unite") val unit: String? = null,
+)

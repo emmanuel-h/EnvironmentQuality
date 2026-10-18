@@ -104,6 +104,15 @@ class ScreensDeviceTest {
     }
 
     @Test
+    fun should_show_the_river_quality_and_the_groundwater_level_when_the_nearby_screen_opens() {
+        show { NearbyScreen("27681", navigator) }
+        waitFor(R.string.nearby_river_quality)
+        waitFor(R.string.river_oxygen)
+        waitFor(R.string.nearby_aquifer_level)
+        waitFor(R.string.nearby_depth_above)
+    }
+
+    @Test
     fun should_explain_the_statuses_when_the_sources_tab_opens() {
         show { SourcesScreen(navigator) }
         waitFor(R.string.sources_statuses)
@@ -122,6 +131,10 @@ class ScreensDeviceTest {
 
     private companion object {
         val ROUTES = listOf(
+            // Before "code_parametre=", which the river quality URL also carries.
+            "qualite_rivieres/analyse_pc" to "rivieres_analyses.json",
+            "niveaux_nappes/stations" to "piezo_stations.json",
+            "niveaux_nappes/chroniques" to "piezo_chroniques.json",
             "/communes/27681" to "geo_commune_27681.json",
             "communes?" to "geo_communes_vernon.json",
             "code_parametre=" to "resultats_dis_history.json",

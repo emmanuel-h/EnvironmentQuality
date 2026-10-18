@@ -52,9 +52,13 @@ import fr.mandarine.environmentquality.domain.model.FlowStation
 import fr.mandarine.environmentquality.domain.model.GroundwaterResult
 import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
+import fr.mandarine.environmentquality.domain.model.RiverQuality
+import fr.mandarine.environmentquality.domain.model.RiverResult
+import fr.mandarine.environmentquality.presentation.AquiferLevel
 import fr.mandarine.environmentquality.presentation.LiveRiver
 import fr.mandarine.environmentquality.presentation.LoadState
 import fr.mandarine.environmentquality.presentation.Nearby
+import fr.mandarine.environmentquality.presentation.NearbyRiverQuality
 import fr.mandarine.environmentquality.presentation.NearbyViewModel
 import fr.mandarine.environmentquality.presentation.RiverTemperature
 import fr.mandarine.environmentquality.ui.appContainer
@@ -125,10 +129,14 @@ private fun NearbyContent(nearby: Nearby, tab: NearbyTab) {
             } else {
                 FlowCard(nearby.flowStations, nearby.flows, nearby.flowStationCount)
             }
+            SectionTitle(stringResource(R.string.nearby_river_quality))
+            nearby.riverQuality?.let { RiverQualityCard(it) } ?: EmptyText(stringResource(R.string.nearby_river_quality_none))
         }
         if (tab != NearbyTab.RIVERS) {
             SectionTitle(stringResource(R.string.nearby_groundwater))
             nearby.groundwater?.let { GroundwaterCard(it, nearby.groundwaterSampling) } ?: EmptyText(stringResource(R.string.nearby_no_groundwater))
+            SectionTitle(stringResource(R.string.nearby_aquifer_level))
+            nearby.aquiferLevel?.let { AquiferLevelCard(it) } ?: EmptyText(stringResource(R.string.nearby_aquifer_none))
         }
         Text(stringResource(R.string.nearby_source), style = MaterialTheme.typography.bodySmall)
     }
@@ -438,6 +446,95 @@ private fun GroundwaterMeasure(label: String, result: GroundwaterResult, limit: 
             style = MaterialTheme.typography.bodySmall,
             color = if (over) Palette.NonConform else Color.Unspecified,
         )
+    }
+}
+
+@Composable
+private fun RiverQualityCard(nearby: NearbyRiverQuality) {
+    val quality = nearby.quality
+    val distance = nearby.distanceKm?.let { stringResource(R.string.nearby_distance, Format.decimal(it, 1)) }
+    AppCard(Modifier.fillMaxWidth()) {
+        StationHeader(AppIcons.Waves, quality.stationName, distance)
+        Spacer(Modifier.height(12.dp))
+        val shown = RIVER_PARAMETERS.mapNotNull { (code, label) -> quality.result(code)?.let { it to label } }
+        shown.chunked(2).forEachIndexed { index, pair ->
+            if (index > 0) Spacer(Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                pair.forEach { (result, label) -> RiverMeasure(stringResource(label), result, Modifier.weight(1f)) }
+                if (pair.size == 1) Spacer(Modifier.weight(1f))
+            }
+        }
+        quality.sampledOn?.let {
+            Spacer(Modifier.height(10.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(AppIcons.Clock, contentDescription = null, tint = Palette.Muted, modifier = Modifier.size(14.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.nearby_river_sampled, Format.longDate(it)), style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
+}
+
+private val RIVER_PARAMETERS = listOf(
+    RiverQuality.NITRATES to R.string.river_nitrates,
+    RiverQuality.OXYGEN to R.string.river_oxygen,
+    RiverQuality.ORTHOPHOSPHATES to R.string.river_orthophosphates,
+    RiverQuality.AMMONIUM to R.string.river_ammonium,
+)
+
+@Composable
+private fun RiverMeasure(label: String, result: RiverResult, modifier: Modifier = Modifier) {
+    val unit = plainUnit(result.unit)
+    val good = RiverQuality.meetsGoodStatus(result.code, result.value)
+    val bound = RiverQuality.goodStatusBound(result.code)?.let { listOf(Format.decimal(it), unit).filter(String::isNotEmpty).joinToString(" ") }
+    Column(modifier) {
+        Text(label, style = MaterialTheme.typography.labelLarge, color = Palette.InkSecondary)
+        Text(
+            listOf(Format.decimal(result.value), unit).filter(String::isNotEmpty).joinToString(" "),
+            style = MaterialTheme.typography.titleLarge,
+            color = if (good == false) Palette.NonConform else Color.Unspecified,
+        )
+        if (bound != null) {
+            val line = when {
+                good == false -> stringResource(R.string.nearby_not_good_status, bound)
+                result.code == RiverQuality.OXYGEN -> stringResource(R.string.nearby_good_status_min, bound)
+                else -> stringResource(R.string.nearby_good_status_max, bound)
+            }
+            Text(line, style = MaterialTheme.typography.bodySmall, color = if (good == false) Palette.NonConform else Color.Unspecified)
+        }
+    }
+}
+
+@Composable
+private fun AquiferLevelCard(level: AquiferLevel) {
+    val distance = level.distanceKm?.let { stringResource(R.string.nearby_distance, Format.decimal(it, 1)) }
+    val latest = level.latest
+    AppCard(Modifier.fillMaxWidth()) {
+        StationHeader(AppIcons.Drop, level.station.name, listOfNotNull(level.station.aquifer, distance).joinToString(" · "))
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Measure(
+                stringResource(R.string.nearby_level),
+                stringResource(R.string.unit_ngf, Format.fixed(latest.levelMetres, 2)),
+                level.monthAgo?.let { signed((latest.levelMetres - it.levelMetres) * 100, R.string.nearby_change_month, R.string.nearby_stable) },
+                Modifier.weight(1f),
+            )
+            latest.depthMetres?.let { depth ->
+                // Negative in a captive aquifer whose water rises above the ground.
+                Measure(
+                    stringResource(R.string.nearby_depth),
+                    stringResource(R.string.unit_metres, Format.fixed(abs(depth), 2)),
+                    stringResource(if (depth < 0) R.string.nearby_depth_above else R.string.nearby_depth_below),
+                    Modifier.weight(1f),
+                )
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(AppIcons.Clock, contentDescription = null, tint = Palette.Muted, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(stringResource(R.string.nearby_level_measured, Format.longDate(latest.measuredOn)), style = MaterialTheme.typography.bodySmall)
+        }
     }
 }
 
