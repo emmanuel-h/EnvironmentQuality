@@ -10,6 +10,7 @@ import fr.mandarine.environmentquality.domain.model.GroundwaterSampling
 import fr.mandarine.environmentquality.domain.model.GroundwaterStation
 import fr.mandarine.environmentquality.domain.model.HydroReading
 import fr.mandarine.environmentquality.domain.model.HydroStation
+import fr.mandarine.environmentquality.domain.model.RiskDetails
 import fr.mandarine.environmentquality.domain.model.TemperatureReading
 import fr.mandarine.environmentquality.domain.model.TemperatureStation
 import fr.mandarine.environmentquality.domain.model.byDay
@@ -33,16 +34,23 @@ class DroughtViewModel(
     override suspend fun fetch(code: String): DroughtStatus = drought.status(code)
 }
 
+/** The commune's risk summary, and the details only the Risks screen shows; null when none answered. */
+data class RiskOverview(val risks: CommuneRisks, val details: RiskDetails?)
+
 class RisksViewModel(
     code: String,
-    communes: CommuneRepository,
+    private val communes: CommuneRepository,
     private val risks: RiskRepository,
-) : CommuneDataViewModel<CommuneRisks>(code, communes) {
+) : CommuneDataViewModel<RiskOverview>(code, communes) {
     init {
         refresh()
     }
 
-    override suspend fun fetch(code: String): CommuneRisks = risks.risks(code)
+    override suspend fun fetch(code: String): RiskOverview = coroutineScope {
+        val summary = async { risks.risks(code) }
+        val details = async { runCatching { risks.riskDetails(code, communes.byCode(code)?.centre) }.getOrNull() }
+        RiskOverview(summary.await(), details.await())
+    }
 }
 
 data class LiveRiver(val station: HydroStation, val reading: HydroReading, val distanceKm: Double?)

@@ -101,3 +101,40 @@ internal data class InspectionDto(
 
 @Serializable
 internal data class InspectionFileDto(val urlFichier: String? = null)
+
+/** Géorisques answers an empty body, not JSON, where no clay exposure is mapped. */
+@Serializable
+internal data class RgaDto(val codeExposition: String? = null)
+
+/** The GASPAR plan endpoints page like Spring Data, not like the rest of Géorisques. */
+@Serializable
+internal data class GasparPlanPage(val content: List<RiskPlanDto> = emptyList())
+
+@Serializable
+internal data class RiskPlanDto(
+    val libPpr: String = "",
+    val modeleProcedure: String? = null,
+    val dateModification: String? = null,
+)
+
+@Serializable
+internal data class TriDto(
+    @SerialName("libelle_tri") val name: String = "",
+    @SerialName("date_arrete_carte") val mapsApproved: String? = null,
+)
+
+@Serializable
+internal data class AziDto(
+    @SerialName("libelle_azi") val name: String = "",
+    @SerialName("date_diffusion") val published: String? = null,
+)
+
+@Serializable
+internal data class SoilSectorDto(
+    val nom: String = "",
+    val adresse: String? = null,
+    @SerialName("fiche_risque") val sheet: String? = null,
+)
+
+@Serializable
+internal data class SoilActionDto(val statut: String? = null)

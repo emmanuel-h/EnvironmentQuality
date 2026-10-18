@@ -78,6 +78,15 @@ class ScreensDeviceTest {
     }
 
     @Test
+    fun should_show_clay_plans_flood_areas_and_polluted_soils_when_the_risks_screen_opens() {
+        show { RisksScreen("27681", navigator) }
+        waitFor(R.string.risks_clay)
+        waitFor(R.string.risks_plans)
+        waitFor(R.string.risks_flood_areas)
+        waitFor(R.string.risks_soils)
+    }
+
+    @Test
     fun should_show_river_temperature_and_groundwater_when_the_nearby_screen_opens() {
         show { NearbyScreen("27681", navigator) }
         waitFor(R.string.nearby_live_river)
@@ -124,6 +133,15 @@ class ScreensDeviceTest {
             "radon" to "georisques_radon.json",
             "zonage_sismique" to "georisques_sismique.json",
             "installations_classees" to "georisques_installations.json",
+            "/rga" to "empty_body.txt",
+            "gaspar/pprn" to "georisques_pprn.json",
+            "gaspar/pprt" to "georisques_pprt.json",
+            "gaspar/pprm" to "georisques_pprm.json",
+            "gaspar/tri" to "georisques_tri.json",
+            "gaspar/azi" to "georisques_azi.json",
+            "ssp/conclusions_sis" to "georisques_sis.json",
+            "ssp/instructions" to "georisques_ssp_instructions.json",
+            "ssp/casias" to "georisques_casias.json",
             "observations_tr" to "hydro_observations.json",
             "referentiel/stations" to "hydro_stations.json",
             "temperature/station" to "temperature_stations.json",

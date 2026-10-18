@@ -2,8 +2,12 @@ package fr.mandarine.environmentquality.data.repository
 
 import fr.mandarine.environmentquality.data.remote.FakeHttpClient
 import fr.mandarine.environmentquality.domain.model.Audience
+import fr.mandarine.environmentquality.domain.model.ClayExposure
 import fr.mandarine.environmentquality.domain.model.DroughtLevel
+import fr.mandarine.environmentquality.domain.model.FloodAreaKind
 import fr.mandarine.environmentquality.domain.model.FlowState
+import fr.mandarine.environmentquality.domain.model.GeoPoint
+import fr.mandarine.environmentquality.domain.model.RiskPlanKind
 import fr.mandarine.environmentquality.domain.model.SevesoStatus
 import fr.mandarine.environmentquality.domain.model.WaterResource
 import fr.mandarine.environmentquality.domain.model.byDay
@@ -189,5 +193,69 @@ class EnvironmentRepositoriesTest {
         val http = FakeHttpClient(listOf("qualite_nappes/analyses" to "hubeau_empty.json"))
 
         assertNull(HubEauStationRepository(http).groundwaterSampling("BSS000JKHP", LocalDate.of(2020, 1, 1)))
+    }
+
+    private val detailRoutes = listOf(
+        "gaspar/pprn" to "georisques_pprn.json",
+        "gaspar/pprt" to "georisques_pprt.json",
+        "gaspar/pprm" to "georisques_pprm.json",
+        "gaspar/tri" to "georisques_tri.json",
+        "gaspar/azi" to "georisques_azi.json",
+        "ssp/conclusions_sis" to "georisques_sis.json",
+        "ssp/instructions" to "georisques_ssp_instructions.json",
+        "ssp/casias" to "georisques_casias.json",
+    )
+
+    private val vernon = GeoPoint(49.0921, 1.4827)
+
+    @Test
+    fun `should read plans, flood atlases and polluted soils when loading the risk details`() = runTest {
+        val http = FakeHttpClient(listOf("/rga" to "empty_body.txt") + detailRoutes)
+
+        val details = GeorisquesRiskRepository(http).riskDetails("27681", vernon)
+
+        assertEquals(ClayExposure.NONE, details.clay)
+        assertEquals(listOf(RiskPlanKind.NATURAL, RiskPlanKind.TECHNOLOGICAL), details.plans.map { it.kind })
+        assertEquals("PPRN-I - Seine dans l'Eure", details.plans.first().name)
+        assertEquals(LocalDate.of(2026, 2, 3), details.plans.first().updated)
+        assertEquals(listOf("Atlas des PHEC", "AZI SEINE"), details.floodAreas.map { it.name })
+        assertTrue(details.floodAreas.all { it.kind == FloodAreaKind.FLOOD_ATLAS })
+        val soils = details.soils!!
+        assertEquals(6, soils.sectors.size)
+        assertEquals("68 Avenue de Rouen", soils.sectors.first { it.name == "ENGIE" }.address)
+        assertEquals(null, soils.sectors.first { it.name == "Ralston Energy Systems" }.address)
+        assertEquals(8, soils.actionSites)
+        assertEquals(1, soils.openActions)
+        assertEquals(109, soils.formerActivities)
+        assertTrue(http.requests.any { "rga?latlon=1.4827%2C49.0921" in it })
+        assertTrue(http.requests.any { "ssp/casias" in it && "page_size=1" in it })
+    }
+
+    @Test
+    fun `should read the exposure class when the centre lies on mapped clay`() = runTest {
+        val http = FakeHttpClient(listOf("/rga" to "georisques_rga.json") + detailRoutes)
+
+        assertEquals(ClayExposure.MEDIUM, GeorisquesRiskRepository(http).riskDetails("69123", GeoPoint(45.764, 4.8357)).clay)
+    }
+
+    @Test
+    fun `should keep the other details and leave clay unknown when a source fails or the centre is missing`() = runTest {
+        val http = FakeHttpClient(detailRoutes.filterNot { it.first == "gaspar/azi" || it.first == "ssp/casias" })
+
+        val details = GeorisquesRiskRepository(http).riskDetails("27681", centre = null)
+
+        assertNull(details.clay)
+        assertTrue(details.floodAreas.isEmpty())
+        assertEquals(2, details.plans.size)
+        assertNull(details.soils!!.formerActivities)
+        assertEquals(8, details.soils!!.actionSites)
+        assertTrue(http.requests.none { "/rga" in it })
+    }
+
+    @Test
+    fun `should report no polluted soils information when none of the inventories answers`() = runTest {
+        val http = FakeHttpClient(detailRoutes.filterNot { it.first.startsWith("ssp/") })
+
+        assertNull(GeorisquesRiskRepository(http).riskDetails("27681", vernon).soils)
     }
 }

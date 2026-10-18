@@ -1,0 +1,55 @@
+{
+  "results": 2,
+  "page": 1,
+  "total_pages": 1,
+  "data": [
+    {
+      "code_national_azi": "14DREAL20040022",
+      "libelle_azi": "Atlas des PHEC,",
+      "liste_libelle_risque": [
+        {
+          "num_risque": "11",
+          "libelle_risque_long": "Inondation"
+        }
+      ],
+      "libelle_bassin_risques": "Bassin Seine-Normandie",
+      "date_debut_programmation": "23/03/2004",
+      "date_fin_programmation": "23/03/2004",
+      "date_debut_etude": null,
+      "date_fin_etude": null,
+      "date_debut_information": null,
+      "date_fin_information": null,
+      "date_realisation": null,
+      "date_diffusion": "23/03/2004",
+      "date_publication_web": null,
+      "code_insee": "27681",
+      "libelle_commune": "VERNON"
+    },
+    {
+      "code_national_azi": "27DDT20100007",
+      "libelle_azi": "AZI SEINE",
+      "liste_libelle_risque": [
+        {
+          "num_risque": "11",
+          "libelle_risque_long": "Inondation"
+        }
+      ],
+      "libelle_bassin_risques": "SEINE de Giverny à Criquebeuf",
+      "date_debut_programmation": null,
+      "date_fin_programmation": null,
+      "date_debut_etude": null,
+      "date_fin_etude": null,
+      "date_debut_information": null,
+      "date_fin_information": null,
+      "date_realisation": "01/07/2002",
+      "date_diffusion": null,
+      "date_publication_web": null,
+      "code_insee": "27681",
+      "libelle_commune": "VERNON"
+    }
+  ],
+  "response_code": 200,
+  "message": null,
+  "next": null,
+  "previous": null
+}

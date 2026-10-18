@@ -44,12 +44,19 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.mandarine.environmentquality.R
-import fr.mandarine.environmentquality.domain.model.CommuneRisks
+import fr.mandarine.environmentquality.domain.model.ClayExposure
+import fr.mandarine.environmentquality.domain.model.FloodArea
+import fr.mandarine.environmentquality.domain.model.FloodAreaKind
 import fr.mandarine.environmentquality.domain.model.IndustrialSite
 import fr.mandarine.environmentquality.domain.model.NaturalDisaster
+import fr.mandarine.environmentquality.domain.model.PollutedSoils
+import fr.mandarine.environmentquality.domain.model.RiskDetails
 import fr.mandarine.environmentquality.domain.model.RiskGroup
+import fr.mandarine.environmentquality.domain.model.RiskPlan
+import fr.mandarine.environmentquality.domain.model.RiskPlanKind
 import fr.mandarine.environmentquality.domain.model.SevesoStatus
 import fr.mandarine.environmentquality.presentation.LoadState
+import fr.mandarine.environmentquality.presentation.RiskOverview
 import fr.mandarine.environmentquality.presentation.RisksViewModel
 import fr.mandarine.environmentquality.ui.appContainer
 import fr.mandarine.environmentquality.ui.components.AppCard
@@ -82,7 +89,9 @@ fun RisksScreen(code: String, navigator: Navigator) {
 }
 
 @Composable
-private fun RisksContent(risks: CommuneRisks) {
+private fun RisksContent(overview: RiskOverview) {
+    val risks = overview.risks
+    val details = overview.details
     Column(
         Modifier
             .fillMaxSize()
@@ -106,6 +115,7 @@ private fun RisksContent(risks: CommuneRisks) {
                 Modifier.weight(1f),
             )
         }
+        details?.clay?.let { ClayTile(it) }
 
         if (risks.groups.isEmpty()) {
             EmptyText(stringResource(R.string.risks_none_short))
@@ -128,7 +138,9 @@ private fun RisksContent(risks: CommuneRisks) {
         }
 
         if (risks.disasters.isNotEmpty()) DisastersSection(risks.disasters)
+        details?.let { DetailSections(it) }
         SitesSection(risks.sites)
+        details?.soils?.let { SoilsSection(it) }
         Text(stringResource(R.string.risks_source), style = MaterialTheme.typography.bodySmall)
     }
 }
@@ -144,6 +156,103 @@ private fun Tile(icon: ImageVector, title: String, value: String, scale: String?
         Spacer(Modifier.height(8.dp))
         Text(value, style = MaterialTheme.typography.titleLarge)
         if (scale != null) Text(scale, style = MaterialTheme.typography.bodySmall)
+    }
+}
+
+@Composable
+private fun ClayTile(exposure: ClayExposure) {
+    val value = when (exposure) {
+        ClayExposure.NONE -> R.string.risks_clay_none
+        ClayExposure.LOW -> R.string.risks_clay_low
+        ClayExposure.MEDIUM -> R.string.risks_clay_medium
+        ClayExposure.HIGH -> R.string.risks_clay_high
+    }
+    Tile(AppIcons.Terrain, stringResource(R.string.risks_clay), stringResource(value), stringResource(R.string.risks_clay_scale), Modifier.fillMaxWidth())
+}
+
+@Composable
+private fun DetailSections(details: RiskDetails) {
+    if (details.plans.isNotEmpty()) {
+        SectionTitle(stringResource(R.string.risks_plans))
+        AppCard(Modifier.fillMaxWidth()) {
+            details.plans.forEachIndexed { index, plan ->
+                if (index > 0) HorizontalDivider(color = Palette.Divider, modifier = Modifier.padding(vertical = 8.dp))
+                PlanRow(plan)
+            }
+            Spacer(Modifier.height(10.dp))
+            Text(stringResource(R.string.risks_plans_note), style = MaterialTheme.typography.bodySmall)
+        }
+    }
+    if (details.floodAreas.isNotEmpty()) {
+        SectionTitle(stringResource(R.string.risks_flood_areas))
+        AppCard(Modifier.fillMaxWidth()) {
+            details.floodAreas.forEachIndexed { index, area ->
+                if (index > 0) HorizontalDivider(color = Palette.Divider, modifier = Modifier.padding(vertical = 8.dp))
+                FloodAreaRow(area)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlanRow(plan: RiskPlan) {
+    val (icon, kind) = when (plan.kind) {
+        RiskPlanKind.NATURAL -> AppIcons.Flood to R.string.risks_plan_natural
+        RiskPlanKind.TECHNOLOGICAL -> AppIcons.Factory to R.string.risks_plan_technological
+        RiskPlanKind.MINING -> AppIcons.Terrain to R.string.risks_plan_mining
+    }
+    val updated = plan.updated?.let { stringResource(R.string.risks_updated, Format.mediumDate(it)) }
+    DetailRow(icon, plan.name, listOfNotNull(stringResource(kind), updated).joinToString(" · "))
+}
+
+@Composable
+private fun FloodAreaRow(area: FloodArea) {
+    val kind = when (area.kind) {
+        FloodAreaKind.HIGH_RISK_TERRITORY -> R.string.risks_flood_territory
+        FloodAreaKind.FLOOD_ATLAS -> R.string.risks_flood_atlas
+    }
+    val published = area.published?.let { stringResource(R.string.risks_published, Format.mediumDate(it)) }
+    DetailRow(AppIcons.Flood, area.name, listOfNotNull(stringResource(kind), published).joinToString(" · "))
+}
+
+@Composable
+private fun DetailRow(icon: ImageVector, title: String, detail: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, contentDescription = null, tint = Palette.InkSecondary, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(10.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleSmall)
+            if (detail.isNotEmpty()) Text(detail, style = MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+
+@Composable
+private fun SoilsSection(soils: PollutedSoils) {
+    SectionTitle(stringResource(R.string.risks_soils))
+    AppCard(Modifier.fillMaxWidth()) {
+        if (soils.sectors.isEmpty()) {
+            Text(stringResource(R.string.risks_soils_none), style = MaterialTheme.typography.bodyMedium, color = Palette.InkSecondary)
+        } else {
+            Text(
+                pluralStringResource(R.plurals.risks_soil_sectors, soils.sectors.size, soils.sectors.size),
+                style = MaterialTheme.typography.labelLarge,
+                color = Palette.InkSecondary,
+            )
+            soils.sectors.forEach { sector ->
+                HorizontalDivider(color = Palette.Divider, modifier = Modifier.padding(vertical = 8.dp))
+                DetailRow(AppIcons.Terrain, sector.name, sector.address.orEmpty())
+                sector.sheetUrl?.let { ReportLink(it, stringResource(R.string.risks_soil_sheet)) }
+            }
+        }
+        val counts = listOfNotNull(
+            soils.actionSites?.let { pluralStringResource(R.plurals.risks_soil_actions, it, it, soils.openActions) },
+            soils.formerActivities?.let { pluralStringResource(R.plurals.risks_former_activities, it, it) },
+        )
+        if (counts.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            counts.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
+        }
     }
 }
 
@@ -280,7 +389,7 @@ private fun SitesSection(sites: List<IndustrialSite>) {
                 }
                 SevesoBadge(site.seveso)
             }
-            site.inspectionReportUrl?.let { url -> InspectionReportLink(url) }
+            site.inspectionReportUrl?.let { url -> ReportLink(url, stringResource(R.string.risks_inspection_report)) }
         }
         val others = ordered.size - SITES_SHOWN
         if (others > 0) {
@@ -291,7 +400,7 @@ private fun SitesSection(sites: List<IndustrialSite>) {
 }
 
 @Composable
-private fun InspectionReportLink(url: String) {
+private fun ReportLink(url: String, label: String) {
     val uriHandler = LocalUriHandler.current
     TextButton(
         onClick = { runCatching { uriHandler.openUri(url) } },
@@ -299,7 +408,7 @@ private fun InspectionReportLink(url: String) {
     ) {
         Icon(AppIcons.External, contentDescription = null, tint = Palette.Water, modifier = Modifier.size(16.dp))
         Spacer(Modifier.width(6.dp))
-        Text(stringResource(R.string.risks_inspection_report), color = Palette.Water, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+        Text(label, color = Palette.Water, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
     }
 }
 

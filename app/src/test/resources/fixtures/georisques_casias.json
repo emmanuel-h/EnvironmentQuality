@@ -1,0 +1,24 @@
+{
+  "results": 109,
+  "page": 1,
+  "total_pages": 109,
+  "data": [
+    {
+      "identifiant_ssp": "SSP0004574",
+      "identifiant_casias": "27SIS06894",
+      "nom_etablissement": "Ralston Energy Systems",
+      "activite_principale": "Fonderie et travail des métaux",
+      "adresse": "",
+      "adresse_lieudit": null,
+      "code_insee": "27681",
+      "nom_commune": "VERNON",
+      "statut": "En arrêt",
+      "fiche_risque": "https://fiches-risques.brgm.fr/georisques/casias/SSP0004574",
+      "date_maj": "2026-01-15"
+    }
+  ],
+  "response_code": 200,
+  "message": null,
+  "next": "http://api-georisques.bike-prod.brgm.fr/api/v1/ssp/casias?code_insee=27681&page_size=1&page=2",
+  "previous": null
+}

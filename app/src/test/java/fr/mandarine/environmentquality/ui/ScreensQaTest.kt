@@ -139,6 +139,17 @@ class ScreensQaTest {
     }
 
     @Test
+    fun `should show clay, prevention plans, flood atlases and polluted soils when the risks screen opens`() {
+        show("risks-details") { RisksScreen("27681", navigator) }
+        waitFor("Non exposé")
+        waitFor("PPRT SNECMA Vernon")
+        waitFor("Atlas des zones inondables")
+        waitFor("6 secteurs d'information sur les sols")
+        waitFor("8 sites pollués suivis par l'administration, dont 1 en cours")
+        waitFor("109 anciennes activités industrielles ou de service recensées")
+    }
+
+    @Test
     fun `should show river, temperature, flows and groundwater when the nearby screen opens`() {
         show("nearby") { NearbyScreen("27681", navigator) }
         waitFor("Rivière en direct")
@@ -237,6 +248,15 @@ class ScreensQaTest {
             "radon" to "georisques_radon.json",
             "zonage_sismique" to "georisques_sismique.json",
             "installations_classees" to "georisques_installations.json",
+            "/rga" to "empty_body.txt",
+            "gaspar/pprn" to "georisques_pprn.json",
+            "gaspar/pprt" to "georisques_pprt.json",
+            "gaspar/pprm" to "georisques_pprm.json",
+            "gaspar/tri" to "georisques_tri.json",
+            "gaspar/azi" to "georisques_azi.json",
+            "ssp/conclusions_sis" to "georisques_sis.json",
+            "ssp/instructions" to "georisques_ssp_instructions.json",
+            "ssp/casias" to "georisques_casias.json",
             "observations_tr" to "hydro_observations.json",
             "referentiel/stations" to "hydro_stations.json",
             "temperature/station" to "temperature_stations.json",
